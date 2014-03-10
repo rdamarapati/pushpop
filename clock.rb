@@ -43,6 +43,8 @@ every(1.minute, 'count.failure') do
                      operator: "gte"
                    }])
 
+  puts "count.failure: #{result}"
+
   if result != 0
     send_mail "count.failure is non-zero!", result
   end
@@ -56,6 +58,9 @@ every(1.minute, 'count.timeout') do
                      property_value: 0,
                      operator: "eq"
                    }])
+
+  puts "count.timeout: #{result}"
+
    if result != 0
      send_mail "count.timeout is non-zero!", result
    end
