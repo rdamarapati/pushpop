@@ -41,6 +41,10 @@ every(1.minute, 'count.failure') do
                      property_name: "response.status",
                      property_value: 400,
                      operator: "gte"
+                   },{
+                     property_name: "check.utility",
+                     property_value: false,
+                     operator: "exists"
                    }])
 
   puts "count.failure: #{result}"
@@ -57,6 +61,10 @@ every(1.minute, 'count.timeout') do
                      property_name: "response.status",
                      property_value: 0,
                      operator: "eq"
+                   },{
+                     property_name: "check.utility",
+                     property_value: false,
+                     operator: "exists"
                    }])
 
   puts "count.timeout: #{result}"
