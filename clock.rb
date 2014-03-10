@@ -46,7 +46,7 @@ every(1.minute, 'count.failure') do
   puts "count.failure: #{result}"
 
   if result != 0
-    send_mail "count.failure is non-zero!", "" + result
+    send_mail "count.failure is non-zero!", "#{result}"
   end
 end
 
@@ -62,7 +62,7 @@ every(1.minute, 'count.timeout') do
   puts "count.timeout: #{result}"
 
    if result != 0
-     send_mail "count.timeout is non-zero!", "" + result
+     send_mail "count.timeout is non-zero!", "#{result}"
    end
 end
 
