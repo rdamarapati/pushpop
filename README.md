@@ -1,6 +1,42 @@
 # keen-cron
 
-Trigger actions based on the result of queries made to Keen IO.
+Trigger actions based on the result of queries made to Keen IO at regular intervals.
+
+keen-cron can be used for a variety of use cases:
+
++ Send out a daily email of your metrics
++ Send an alerting email or SMS when a metric is out-of-whack
++ Eagerly fetch metrics at an interval to keep a cache fresh
+
+Here's an example `Cronfile` that runs a query every five minutes and
+sends an email if the query result is non-zero.
+
+``` ruby
+require 'keen'
+require 'plugins/keen'
+require 'plugins/sendgrid'
+
+job "Daily Email" do
+
+  every 24.hours, at: "00:00"
+
+  step "keen" do
+    event_collection "signups"
+    analysis_type "count"
+  end
+
+  step "send_if_nonzero" do |response|
+    return true if response[:result] > 0
+  end
+
+  step "sendgrid" do |response|
+    to "josh@keen.io"
+    subject "#{response[:result]} Signups Today!"
+    template "foo.html.erb"
+  end
+
+end
+```
 
 keen-cron uses Clockwork. Clockwork creates a lightweight, long-running
 Ruby process that does work at configurable intervals. No confusing

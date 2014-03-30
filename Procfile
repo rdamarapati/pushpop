@@ -1,1 +1,1 @@
-clock: bundle exec clockwork clock.rb
+clock: bundle exec ruby -v Cronfile
