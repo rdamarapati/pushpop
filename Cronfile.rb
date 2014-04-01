@@ -1,25 +1,29 @@
 require 'lib/keencron'
-require 'keen'
 require 'plugins/keen'
 require 'plugins/sendgrid'
 
-job "Daily Email" do
+module KeenCron
 
-  every 24.hours, at: "00:00"
+  job 'Daily Email' do
 
-  step "keen" do
-    event_collection "signups"
-    analysis_type "count"
-  end
+    every 24.hours, at: '00:00'
 
-  step "send_if_nonzero" do |response|
-    return true if response[:result] > 0
-  end
+    step 'keen', 'query' do
+      event_collection 'signups'
+      analysis_type 'count'
+      timeframe 'last_24_hours'
+    end
 
-  step "sendgrid" do |response|
-    to "josh@keen.io"
-    subject "#{response[:result]} Signups Today!"
-    template "foo.html.erb"
+    step 'send_if_nonzero', nil do |response|
+      return true if response[:result] > 0
+    end
+
+    step 'sendgrid' do |response|
+      to 'josh@keen.io'
+      subject '#{response[:result]} Signups Today!'
+      template 'foo.html.erb', data: response
+    end
+
   end
 
 end
