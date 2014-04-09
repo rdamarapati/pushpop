@@ -21,12 +21,12 @@ namespace :jobs do
 
   task :test do
     load "#{File.dirname(__FILE__)}/Pushfile"
-    Pushover.run!
+    Pushover.run
   end
 
   task :run do
     load "#{File.dirname(__FILE__)}/Pushfile"
-    Pushover.schedule!
+    Pushover.schedule
     Clockwork.manager.run
   end
 end

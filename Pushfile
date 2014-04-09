@@ -14,8 +14,4 @@ job 'Simple Math' do
     20 + response.first
   end
 
-  step 'print' do |response|
-    puts "Result is #{response.first}"
-  end
-
 end

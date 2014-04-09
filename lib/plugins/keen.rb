@@ -14,7 +14,7 @@ module Pushover
       self.block = block
     end
 
-    def run!
+    def run
       case self._analysis_type
         when 'count'
           Keen.count(self._event_collection, self.to_analysis_options)

@@ -30,10 +30,13 @@ class Job
   def run
     step_responses = []
     self.steps.each do |step|
-      step_response = step.run!(step_responses)
+      step_response = step.run(step_responses)
       step_response == false ?
           return : step_responses.unshift(step_response)
     end
+
+    Pushover.logger.debug("#{name}: #{step_responses.first}")
+
     step_responses
   end
 

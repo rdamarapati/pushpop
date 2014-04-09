@@ -47,7 +47,7 @@ describe Pushover do
         end
       end
 
-      Pushover.run!.should == [[123456], [654321]]
+      Pushover.run.should == [[123456], [654321]]
     end
   end
 end

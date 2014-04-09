@@ -9,8 +9,7 @@ class Step
     self.block = block
   end
 
-  def run!(step_responses=nil)
+  def run(step_responses=nil)
     block.call(step_responses)
   end
 end
-
