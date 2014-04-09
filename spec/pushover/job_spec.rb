@@ -1,14 +1,21 @@
 require 'spec_helper'
 
-describe Job do
+describe Pushover::Job do
 
-  let (:empty_job) { Job.new('foo') do end }
-  let (:empty_step) { Step.new('bar') do end }
+  let (:empty_job) { Pushover::Job.new('foo') do end }
+  let (:empty_step) { Pushover::Step.new('bar') do end }
+
+  describe '#register_providers' do
+    it 'should register a provider' do
+      Pushover::Job.register_provider('blaz', Class)
+      Pushover::Job.step_providers['blaz'].should == Class
+    end
+  end
 
   describe '#initialize' do
     it 'should set a name and evaluate a block' do
       block_ran = false
-      job = Job.new('foo') do block_ran = true end
+      job = Pushover::Job.new('foo') do block_ran = true end
       job.name.should == 'foo'
       job.every_duration.should be_nil
       job.every_options.should == {}
@@ -29,16 +36,42 @@ describe Job do
     it 'should add the step to the internal list of steps' do
       empty_proc = Proc.new {}
       job = empty_job
-      job.step('blah', 'blaz', &empty_proc)
+      job.step('blah', &empty_proc)
       job.steps.first.name.should == 'blah'
-      job.steps.first.provider.should == 'blaz'
       job.steps.first.block.should == empty_proc
+    end
+
+    context 'provider specified' do
+      class FakeStep < Pushover::Step
+      end
+
+      before do
+        Pushover::Job.register_provider('blaz', FakeStep)
+      end
+
+      it 'should use the registered provider to instantiate the class' do
+        empty_proc = Proc.new {}
+        job = empty_job
+        job.step('blah', 'blaz', &empty_proc)
+        job.steps.first.name.should == 'blah'
+        job.steps.first.provider.should == 'blaz'
+        job.steps.first.class.should == FakeStep
+        job.steps.first.block.should == empty_proc
+      end
+
+      it 'should throw an exception for an unregistered provider' do
+        empty_proc = Proc.new {}
+        job = empty_job
+        expect {
+          job.step('blah', 'blaze', &empty_proc)
+        }.to raise_error /No provider configured/
+      end
     end
   end
 
-  describe '#run!' do
+  describe '#run' do
     it 'should call each step with the response to the previous' do
-      job = Job.new('foo') do
+      job = Pushover::Job.new('foo') do
         step 'one' do
           10
         end
@@ -54,7 +87,7 @@ describe Job do
   describe '#schedule' do
     it 'should add the job to clockwork' do
       frequency = 1.seconds
-      simple_job = Job.new('foo') do
+      simple_job = Pushover::Job.new('foo') do
         every frequency
         def times_run
           @times_run ||= 0

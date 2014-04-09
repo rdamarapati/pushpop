@@ -3,26 +3,23 @@ require 'clockwork'
 require 'pushover/job'
 require 'pushover/step'
 
-class Pushover
+module Pushover
   class << self
-    attr_accessor :logger
+    cattr_accessor :logger
+    cattr_accessor :jobs
 
-    @@jobs = []
+    self.jobs = []
 
     def add_job(name, &block)
-      @@jobs.push(Job.new(name, &block))
-    end
-
-    def jobs
-      @@jobs
+      self.jobs.push(Job.new(name, &block))
     end
 
     def run
-      @@jobs.map &:run
+      self.jobs.map &:run
     end
 
     def schedule
-      @@jobs.map &:schedule
+      self.jobs.map &:schedule
     end
   end
 end

@@ -1,17 +1,22 @@
 #!/usr/bin/env ruby
 
+# Sample Pushfile that just does math
+# See examples folder for more examples!
+
+# first step is to require pushover
 require 'pushover'
 
+# now create any number of jobs with any number of steps
+
+# this job run every second
+# it will add 20 to 10 and return 30
 job 'Simple Math' do
-
-  every 5.seconds
-
-  step 'return 10' do
-    10
+  every 1.seconds
+  step 'return 10' do 10 end
+  step 'add 20 to previous step' do |responses|
+    20 + responses.first
   end
-
-  step 'add 20 to previous step' do |response|
-    20 + response.first
+  step 'print result' do |responses|
+    puts responses.first
   end
-
 end

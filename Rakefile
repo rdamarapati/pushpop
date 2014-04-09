@@ -19,13 +19,15 @@ namespace :jobs do
     end
   end
 
-  task :test do
-    load "#{File.dirname(__FILE__)}/Pushfile"
+  task :test, :pushfile do |task, args|
+    pushfile = args[:pushfile] || "Pushfile"
+    load "#{File.dirname(__FILE__)}/#{pushfile}"
     Pushover.run
   end
 
-  task :run do
-    load "#{File.dirname(__FILE__)}/Pushfile"
+  task :run, :pushfile do |task, args|
+    pushfile = args[:pushfile] || "Pushfile"
+    load "#{File.dirname(__FILE__)}/#{pushfile}"
     Pushover.schedule
     Clockwork.manager.run
   end
