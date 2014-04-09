@@ -21,6 +21,9 @@ class Job
   end
 
   def schedule!
+    Clockwork.manager.every(every_duration, name, every_options) do
+      run!
+    end
   end
 
   def run!
@@ -28,9 +31,10 @@ class Job
     self.steps.each do |step|
       step_response = step.run!(step_responses)
       step_response == false ?
-          return : step_responses.push(step_response)
+          return : step_responses.unshift(step_response)
     end
     step_responses
   end
+
 end
 

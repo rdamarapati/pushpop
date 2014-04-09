@@ -1,12 +1,11 @@
 require 'keen'
 
-module KeenCron
+module Pushover
 
   class Keen
 
     attr_accessor :name
 
-    # query properties
     attr_accessor :_event_collection
     attr_accessor :_analysis_type
     attr_accessor :_timeframe
@@ -23,7 +22,7 @@ module KeenCron
     end
 
     def to_analysis_options
-      { timeframe: self._timeframe }
+      { :timeframe => self._timeframe }
     end
 
     def event_collection(event_collection)

@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'pushover'
+
+job 'Simple Math' do
+
+  every 5.seconds
+
+  step 'return 10' do
+    10
+  end
+
+  step 'add 20 to previous step' do |response|
+    20 + response.first
+  end
+
+  step 'print' do |response|
+    puts "Result is #{response.first}"
+  end
+
+end

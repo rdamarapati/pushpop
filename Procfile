@@ -1,1 +1,1 @@
-clock: bundle exec ruby -v Cronfile
+clock: bundle exec ruby -v Pushfile
