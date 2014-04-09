@@ -1,1 +1,1 @@
-clock: bundle exec ruby -v Pushfile
+worker: foreman run rake jobs:run
