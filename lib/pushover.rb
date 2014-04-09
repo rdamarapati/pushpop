@@ -15,11 +15,11 @@ class Pushover
     end
 
     def run!
-      @@jobs.map &:run!
+      @@jobs.map &:run
     end
 
     def schedule!
-      @@jobs.map &:schedule!
+      @@jobs.map &:schedule
     end
   end
 end

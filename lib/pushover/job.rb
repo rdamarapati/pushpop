@@ -8,6 +8,7 @@ class Job
   def initialize(name, &block)
     self.name = name
     self.steps = []
+    self.every_options = {}
     self.instance_eval(&block)
   end
 
@@ -20,13 +21,13 @@ class Job
     self.steps.push(Step.new(name, provider, &block))
   end
 
-  def schedule!
+  def schedule
     Clockwork.manager.every(every_duration, name, every_options) do
-      run!
+      run
     end
   end
 
-  def run!
+  def run
     step_responses = []
     self.steps.each do |step|
       step_response = step.run!(step_responses)
