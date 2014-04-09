@@ -2,13 +2,16 @@ $stdout.sync = true
 
 $: << File.join(File.dirname(__FILE__), './lib')
 
-require 'rspec/core/rake_task'
-desc 'Run Rspec unit tests'
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.pattern = 'spec/**/*_spec.rb'
-end
+begin
+  require 'rspec/core/rake_task'
+  desc 'Run Rspec unit tests'
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.pattern = 'spec/**/*_spec.rb'
+  end
 
-task :default => :spec
+  task :default => :spec
+rescue LoadError
+end
 
 namespace :jobs do
   desc 'Describe jobs'
