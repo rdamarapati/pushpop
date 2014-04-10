@@ -1,1 +1,1 @@
-worker: foreman run rake jobs:run
+worker: bundle exec rake jobs:run[examples/Pushfile-Keen]
