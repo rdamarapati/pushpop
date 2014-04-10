@@ -27,7 +27,7 @@ job do
 
   keen do
     event_collection 'pageviews'
-    analysis_type 'count',
+    analysis_type 'count'
     timeframe 'last_24_hours'
   end
 
