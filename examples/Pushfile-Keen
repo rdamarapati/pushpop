@@ -7,7 +7,7 @@ job 'count total votes' do
 
   every 10.seconds
 
-  step 'query', 'keen' do
+  step nil, 'keen' do
     event_collection 'votes'
     analysis_type 'count'
     group_by 'character'
@@ -15,7 +15,7 @@ job 'count total votes' do
     interval 'daily'
   end
 
-  step 'log' do |response|
+  step do |response|
     Pushover.logger.info(response)
   end
 

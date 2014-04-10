@@ -12,6 +12,14 @@ describe Pushover::Step do
       step.block.should == empty_proc
     end
 
+    it 'should auto-generate a name if not given' do
+      empty_proc = Proc.new {}
+      step = Pushover::Step.new(&empty_proc)
+      step.name.should_not be_nil
+      step.provider.should be_nil
+      step.block.should == empty_proc
+    end
+
     it 'should not require a provider' do
       empty_proc = Proc.new {}
       step = Pushover::Step.new('foo', &empty_proc)

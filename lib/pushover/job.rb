@@ -30,7 +30,7 @@ module Pushover
       self.every_options = options
     end
 
-    def step(name, provider=nil, &block)
+    def step(name=nil, provider=nil, &block)
       if provider
 
         provider_klass = self.class.step_providers[provider]

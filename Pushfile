@@ -12,11 +12,11 @@ require 'pushover'
 # it will add 20 to 10 and return 30
 job 'Simple Math' do
   every 1.seconds
-  step 'return 10' do 10 end
-  step 'add 20 to previous step' do |response|
+  step do 10 end
+  step do |response|
     20 + response
   end
-  step 'print result' do |response|
+  step do |response|
     puts response
   end
 end
