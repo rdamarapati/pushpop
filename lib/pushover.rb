@@ -13,6 +13,11 @@ module Pushover
     cattr_accessor :logger
     cattr_accessor :jobs
 
+    # for jobs and steps
+    def random_name
+      (0...8).map { (65 + rand(26)).chr }.join
+    end
+
     self.jobs = []
 
     def add_job(name=nil, &block)

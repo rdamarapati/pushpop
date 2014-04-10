@@ -20,7 +20,7 @@ module Pushover
     attr_accessor :steps
 
     def initialize(name=nil, &block)
-      self.name = name
+      self.name = name || Pushover.random_name
       self.steps = []
       self.every_options = {}
       self.instance_eval(&block)

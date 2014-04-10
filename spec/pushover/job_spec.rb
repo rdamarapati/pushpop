@@ -22,9 +22,9 @@ describe Pushover::Job do
       block_ran.should be_true
     end
 
-    it 'should not require a name' do
+    it 'should auto-generate a name' do
       job = Pushover::Job.new do end
-      job.name.should be_nil
+      job.name.should_not be_nil
     end
   end
 
