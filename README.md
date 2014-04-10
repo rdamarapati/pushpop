@@ -8,7 +8,7 @@ Here are some ways to use pushover:
 + Send an alerting email or SMS when a metric has changed
 + Fetch metrics at an interval to keep a cache fresh
 
-Pushover contains plugins for [Keen IO](https://keen.io) and [Sendgrid](https://sendgrid.com) that make querying and emailing very easy.
+Pushover contains plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/) that make querying and messaging very easy.
 That said, pushover is totally plugin-based, and adding support for other data sources and messaging plugins is encouraged!
 
 ### Usage
@@ -26,7 +26,7 @@ job do
   every 24.hours, at: '00:00'
 
   keen do
-    event_collection 'signups'
+    event_collection 'pageviews'
     analysis_type 'count',
     timeframe 'last_24_hours'
   end
@@ -34,8 +34,13 @@ job do
   sendgrid do |response|
     to 'team@keen.io'
     from 'pushover@keen.io'
-    subject "There were #{response} Signups Today!"
-    template 'signup_report.html.erb'
+    subject "There were #{response} Pageviews Today!"
+    body 'pageview_report.html.erb'
+  end
+
+  twilio do |_, step_responses|
+    to '+18005555555'
+    body "There were #{step_responses['keen']} Pageviews Today!"
   end
 
 end
@@ -45,6 +50,7 @@ When this job kicks off, the steps run synchronously, and in the order they were
 First, the `keen` step runs using the `keen` plugin.
 The result of the `keen` step is passed the `sendgrid` step. From there, the `sendgrid` plugin
 will send an email with the result of the query.
+Then the `twilio` plugin kicks in, and includes the `keen` pageview count in a text message.
 
 ### Setup
 

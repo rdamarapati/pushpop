@@ -33,7 +33,7 @@ describe Pushover::Sendgrid do
       step = Pushover::Sendgrid.new do |response|
         to 'josh@keen.io'
         from 'alerts+pushover@keen.io'
-        subject "There were #{response} Signups Today!"
+        subject "There were #{response} Pageviews Today!"
         body 'hey wats up'
       end
 

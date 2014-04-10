@@ -4,23 +4,24 @@ require 'pushover'
 
 job do
 
-  every 10.minutes
+  every 24.hours
 
   keen do
-    event_collection 'votes'
+    event_collection 'pageviews'
     analysis_type 'count'
+    timeframe 'last_24_hours'
   end
 
   sendgrid do |response|
     to 'josh@keen.io'
     from 'pushover@keen.io'
-    subject "There were #{response} Votes Today!"
-    body response.inspect
+    subject "There were #{response} Pageviews Today!"
+    body 'More blogging, yo!'
   end
 
   twilio do |_, step_responses|
     to '+17735405264'
-    body "There was #{step_responses['keen']} Votes Today!"
+    body "There were #{step_responses['keen']} Pageviews Today!"
   end
 
 end

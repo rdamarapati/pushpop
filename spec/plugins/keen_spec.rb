@@ -7,7 +7,7 @@ describe Pushover::Keen do
     it 'should set various params' do
 
       step = Pushover::Keen.new do
-        event_collection 'signups'
+        event_collection 'pageviews'
         analysis_type 'count'
         timeframe 'last_3_days'
         target_property 'trinkets'
@@ -16,20 +16,20 @@ describe Pushover::Keen do
         filters [{ :property_value => 'referer',
                    :operator => 'ne',
                    :property_value => 'yahoo.com' }]
-        steps [{ :event_collection => 'signups',
+        steps [{ :event_collection => 'pageviews',
                  :actor_property => 'user.id' }]
         analyses [{ :analysis_type => 'count' }]
       end
 
       step.configure
 
-      step._event_collection.should == 'signups'
+      step._event_collection.should == 'pageviews'
       step._analysis_type.should == 'count'
       step._timeframe.should == 'last_3_days'
       step._group_by.should == 'referer'
       step._interval.should == 'hourly'
       step._steps.should == [{
-         :event_collection => 'signups',
+         :event_collection => 'pageviews',
          :actor_property => 'user.id'
         }]
       step._analyses.should == [{ :analysis_type => 'count' }]
@@ -39,12 +39,12 @@ describe Pushover::Keen do
 
   describe '#run' do
     it 'should run the query based on the analysis type' do
-      Keen.stub(:count).with('signups', {
+      Keen.stub(:count).with('pageviews', {
           :timeframe => 'last_3_days'
       }).and_return(365)
 
       step = Pushover::Keen.new('one') do
-        event_collection 'signups'
+        event_collection 'pageviews'
         analysis_type 'count'
         timeframe 'last_3_days'
       end
@@ -63,7 +63,7 @@ describe Pushover::Keen do
       step._filters = [{ :property_value => 'referer',
                          :operator => 'ne',
                          :property_value => 'yahoo.com' }]
-      step._steps = [{ :event_collection => 'signups',
+      step._steps = [{ :event_collection => 'pageviews',
                        :actor_property => 'user.id' }]
       step._analyses = [{ :analysis_type => 'count' }]
       step.to_analysis_options.should == {
@@ -74,7 +74,7 @@ describe Pushover::Keen do
           :filters => [{ :property_value => 'referer',
                          :operator => 'ne',
                          :property_value => 'yahoo.com' }],
-          :steps => [{ :event_collection => 'signups',
+          :steps => [{ :event_collection => 'pageviews',
                        :actor_property => 'user.id' }],
           :analyses => [{ :analysis_type => 'count' }]
       }
