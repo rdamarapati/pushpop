@@ -14,7 +14,7 @@ module Pushover
 
   class Sendgrid < Step
 
-    PROVIDER_NAME = 'sendgrid'
+    PLUGIN_NAME = 'sendgrid'
 
     attr_accessor :_from
     attr_accessor :_to
@@ -78,5 +78,5 @@ module Pushover
 
   end
 
-  Pushover::Job.register_provider(Sendgrid::PROVIDER_NAME, Sendgrid)
+  Pushover::Job.register_plugin(Sendgrid::PLUGIN_NAME, Sendgrid)
 end

@@ -8,7 +8,7 @@ module Pushover
 
   class Twilio < Step
 
-    PROVIDER_NAME = 'twilio'
+    PLUGIN_NAME = 'twilio'
 
     attr_accessor :_from
     attr_accessor :_to
@@ -48,5 +48,5 @@ module Pushover
 
   end
 
-  Pushover::Job.register_provider(Twilio::PROVIDER_NAME, Twilio)
+  Pushover::Job.register_plugin(Twilio::PLUGIN_NAME, Twilio)
 end

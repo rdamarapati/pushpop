@@ -3,12 +3,12 @@ module Pushover
   class Step
 
     attr_accessor :name
-    attr_accessor :provider
+    attr_accessor :plugin
     attr_accessor :block
 
-    def initialize(name=nil, provider=nil, &block)
-      self.name = name || provider || Pushover.random_name
-      self.provider = provider
+    def initialize(name=nil, plugin=nil, &block)
+      self.name = name || plugin || Pushover.random_name
+      self.plugin = plugin
       self.block = block
     end
 

@@ -4,7 +4,7 @@ module Pushover
 
   class Keen < Step
 
-    PROVIDER_NAME = 'keen'
+    PLUGIN_NAME = 'keen'
 
     attr_accessor :_event_collection
     attr_accessor :_analysis_type
@@ -74,5 +74,5 @@ module Pushover
 
   end
 
-  Pushover::Job.register_provider(Keen::PROVIDER_NAME, Keen)
+  Pushover::Job.register_plugin(Keen::PLUGIN_NAME, Keen)
 end

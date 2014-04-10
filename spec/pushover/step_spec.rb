@@ -4,31 +4,31 @@ describe Pushover::Step do
 
   describe 'initialize' do
 
-    it 'should set a name, a provider, and a block' do
+    it 'should set a name, a plugin, and a block' do
       empty_proc = Proc.new {}
       step = Pushover::Step.new('foo', 'foopie', &empty_proc)
       step.name.should == 'foo'
-      step.provider.should == 'foopie'
+      step.plugin.should == 'foopie'
       step.block.should == empty_proc
     end
 
-    it 'should auto-generate a name if not given and provider not given' do
+    it 'should auto-generate a name if not given and plugin not given' do
       empty_proc = Proc.new {}
       step = Pushover::Step.new(&empty_proc)
       step.name.should_not be_nil
-      step.provider.should be_nil
+      step.plugin.should be_nil
       step.block.should == empty_proc
     end
 
-    it 'should set name to provider name if not given' do
+    it 'should set name to plugin name if not given' do
       empty_proc = Proc.new {}
       step = Pushover::Step.new(nil, 'keen', &empty_proc)
       step.name.should == 'keen'
-      step.provider.should == 'keen'
+      step.plugin.should == 'keen'
       step.block.should == empty_proc
     end
 
-    it 'should not require a provider' do
+    it 'should not require a plugin' do
       empty_proc = Proc.new {}
       step = Pushover::Step.new('foo', &empty_proc)
       step.name.should == 'foo'

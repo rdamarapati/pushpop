@@ -7,6 +7,6 @@ require 'pushover'
 RSpec.configure do |config|
   config.before :each do
     Pushover.jobs.clear
-    Pushover::Job.step_providers.clear
+    Pushover::Job.step_plugins.clear
   end
 end

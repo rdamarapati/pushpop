@@ -4,12 +4,12 @@ module Pushover
 
     class << self
 
-      cattr_accessor :step_providers
-      self.step_providers = {}
+      cattr_accessor :step_plugins
+      self.step_plugins = {}
 
-      def register_provider(name, klass)
-        self.step_providers ||= {}
-        self.step_providers[name.to_s] = klass
+      def register_plugin(name, klass)
+        self.step_plugins ||= {}
+        self.step_plugins[name.to_s] = klass
       end
 
     end
@@ -31,15 +31,15 @@ module Pushover
       self.every_options = options
     end
 
-    def step(name=nil, provider=nil, &block)
-      if provider
+    def step(name=nil, plugin=nil, &block)
+      if plugin
 
-        provider_klass = self.class.step_providers[provider]
-        raise "No provider configured for #{provider}" unless provider_klass
+        plugin_klass = self.class.step_plugins[plugin]
+        raise "No plugin configured for #{plugin}" unless plugin_klass
 
-        self.add_step(provider_klass.new(name, provider, &block))
+        self.add_step(plugin_klass.new(name, plugin, &block))
       else
-        self.add_step(Step.new(name, provider, &block))
+        self.add_step(Step.new(name, plugin, &block))
       end
     end
 
@@ -77,15 +77,15 @@ module Pushover
     end
 
     def method_missing(method, *args, &block)
-      provider_class = self.class.step_providers[method.to_s]
+      plugin_class = self.class.step_plugins[method.to_s]
 
       name = args[0]
-      provider = method.to_s
+      plugin = method.to_s
 
-      if provider_class
-        step(name, provider, &block)
+      if plugin_class
+        step(name, plugin, &block)
       else
-        raise "No provider defined until name #{method}"
+        raise "No plugin defined until name #{method}"
       end
     end
 

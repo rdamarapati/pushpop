@@ -9,7 +9,7 @@ Here are some ways to use pushover:
 + Fetch metrics at an interval to keep a cache fresh
 
 Pushover contains plugins for [Keen IO](https://keen.io) and [Sendgrid](https://sendgrid.com) that make querying and emailing very easy.
-That said, pushover is totally plugin-based, and adding support for other data sources and messaging providers is encouraged!
+That said, pushover is totally plugin-based, and adding support for other data sources and messaging plugins is encouraged!
 
 ### Usage
 
