@@ -10,6 +10,9 @@ job 'count total votes' do
   step 'query', 'keen' do
     event_collection 'votes'
     analysis_type 'count'
+    group_by 'character'
+    timeframe 'last_7_days'
+    interval 'daily'
   end
 
   step 'log' do |response|

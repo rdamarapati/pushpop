@@ -14,7 +14,7 @@ That said, pushover is totally plugin-based, and adding support for other data s
 ### Usage
 
 The core concepts of pushover are jobs and steps. Jobs run at regular intervals, and consist of one or more steps.
-Jobs and steps are described in a pushfile.
+Jobs and steps are described in a `Pushfile`.
 
 Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an email with the results:
 
