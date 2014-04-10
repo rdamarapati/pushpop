@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'pushover'
-require 'plugins/keen'
 
 job 'count total votes' do
 

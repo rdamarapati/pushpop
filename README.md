@@ -20,20 +20,18 @@ Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sen
 
 ``` ruby
 require 'pushover'
-require 'plugins/keen'
-require 'plugins/sendgrid'
 
-job 'daily email' do
+job do
 
   every 24.hours, at: '00:00'
 
-  step 'fire-query', 'keen' do
+  keen do
     event_collection 'signups'
     analysis_type 'count',
     timeframe 'last_24_hours'
   end
 
-  step 'send-email', 'sendgrid' do |response|
+  sendgrid do |response|
     to 'team@keen.io'
     subject "There were #{response} Signups Today!"
     template 'signup_report.html.erb'
@@ -43,8 +41,8 @@ end
 ```
 
 When this job kicks off, the steps run synchronously, and in the order they were defined.
-First, `fire-query` step runs, using the `keen` plugin.
-The result of `fire-query` is passed to the next step, `send-email`. From there, the `sendgrid` plugin
+First, the `keen` step runs using the `keen` plugin.
+The result of the `keen` step is passed the `sendgrid` step. From there, the `sendgrid` plugin
 will send an email with the result of the query.
 
 ### Setup

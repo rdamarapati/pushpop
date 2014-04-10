@@ -3,6 +3,11 @@ require 'clockwork'
 require 'pushover/job'
 require 'pushover/step'
 
+# require all plugins
+Dir["#{File.expand_path('../plugins/*', __FILE__)}.rb"].each { |file|
+  require file
+}
+
 module Pushover
   class << self
     cattr_accessor :logger
