@@ -15,21 +15,22 @@ end
 
 namespace :jobs do
   desc 'Describe jobs'
-  task :describe do
-    load "#{File.dirname(__FILE__)}/Pushfile"
+  task :describe, :pushfile do |task, args|
+    pushfile = args[:pushfile] || 'Pushfile'
+    load "#{File.dirname(__FILE__)}/#{pushfile}"
     Pushover.jobs.each do |job|
       puts job.name
     end
   end
 
   task :test, :pushfile do |task, args|
-    pushfile = args[:pushfile] || "Pushfile"
+    pushfile = args[:pushfile] || 'Pushfile'
     load "#{File.dirname(__FILE__)}/#{pushfile}"
     Pushover.run
   end
 
   task :run, :pushfile do |task, args|
-    pushfile = args[:pushfile] || "Pushfile"
+    pushfile = args[:pushfile] || 'Pushfile'
     load "#{File.dirname(__FILE__)}/#{pushfile}"
     Pushover.schedule
     Clockwork.manager.run
