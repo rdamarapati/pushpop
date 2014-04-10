@@ -4,17 +4,17 @@ Send emails & notifications in response to analytics events.
 
 Here are some ways to use pushover:
 
-+ Send out a daily email of your metrics
-+ Send an alerting email or SMS when a metric has changed
++ Send a daily metrics email
++ Send an email or SMS alert when a metric has changed
 + Fetch metrics at an interval to keep a cache fresh
 
-Pushover contains plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/) that make querying and messaging very easy.
-That said, pushover is totally plugin-based, and adding support for other data sources and messaging plugins is encouraged!
+Pushover currently contains plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/) that make grabbing data and sending messages easy.
+
+Pushover is entirely plugin-based, and adding support for other data sources and messaging plugins is encouraged!
 
 ### Usage
 
-The core concepts of pushover are jobs and steps. Jobs run at regular intervals, and consist of one or more steps.
-Jobs and steps are described in a `Pushfile`.
+The core concepts of pushover are jobs and steps. Jobs run at regular intervals, and consist of one or more steps that run in sequence. Jobs and steps are described in a `Pushfile`.
 
 Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an email with the results:
 
@@ -46,11 +46,14 @@ job do
 end
 ```
 
-When this job kicks off, the steps run synchronously, and in the order they were defined.
-First, the `keen` step runs using the `keen` plugin.
-The result of the `keen` step is passed the `sendgrid` step. From there, the `sendgrid` plugin
-will send an email with the result of the query.
-Then the `twilio` plugin kicks in, and includes the `keen` pageview count in a text message.
+Each step runs in the order it was defined.
+
+First, the `keen` step runs and does a count of pageviews over the last 24 hours.
+The number of pageviews is passed the `sendgrid` step. The `sendgrid` step
+sends an email with the number of pageviews in the subject.
+Lastly, the `twilio` step sends an SMS to a given phone number.
+
+Each step is invoked with 2 arguments - the response of the last step and a map of all responses so far. The map is keyed by step name, which defaults to the plugin name. In this example, `step_responses['keen']` holds the count that resulted from the `keen` step.
 
 ### Setup
 
@@ -71,12 +74,17 @@ default for rake tasks. Try a rake task now:
 $ bundle exec rake jobs:test
 ```
 
-the `jobs:test` rake task runs each job just once, so you can see what it'll do. another rake task, `jobs:run`,
+The `jobs:test` rake task runs each job just once, so you can see what it'll do. Another rake task, `jobs:run`,
 will run the jobs at the intervals you've defined.
 
 ``` shell
 $ bundle exec rake jobs:run
 ```
+
+Pushover uses [Clockwork](https://github.com/tomykaira/clockwork) to schedule jobs. Clockwork creates a lightweight, long-running Ruby process that does work at configurable intervals. It doesn't install anything into cron,
+and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
+
+This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job you have defined at the times specified in the Pushfile.
 
 You can also run rake tasks using a different Pushfile inside the project folder. Just add an argument to the rake task.
 
@@ -92,15 +100,7 @@ $ git add Pushfile
 $ git commit -m 'Added my jobs'
 ```
 
-For example, if you have a job configured to run `every 10.minutes`, this process sleep for 10 minutes, wake up
-and run your job, then repeat that process indefinitely.
-Note: This process will run indefinitely until it is killed. This is the process to run when you deploy.
-
 ### Deployment
-
-Pushover uses Clockwork to schedule jobs. Clockwork creates a lightweight, long-running
-Ruby process that does work at configurable intervals. It doesn't install anything into cron,
-and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
 
 Here's how to deploy to Heroku.
 
@@ -115,10 +115,11 @@ the environment variables they expect. An easy way to upload Heroku configs is u
 which uses a .env file in the project directory.
 
 ``` shell
-$ echo 'KEEN_PROJECT_ID=<my-project-id>' >> .env
-$ echo 'KEEN_READ_KEY=<my-read-key>' >> .env
-$ echo 'SENDGRID_USERNAME=<my-username>' >> .env
-$ echo 'SENDGRID_PASSWORD=<my-password>' >> .env
+$ echo 'KEEN_PROJECT_ID=<my-project-id>'   >> .env
+$ echo 'KEEN_READ_KEY=<my-read-key>'       >> .env
+$ echo 'SENDGRID_USERNAME=<my-username>'   >> .env
+$ echo 'SENDGRID_PASSWORD=<my-password>'   >> .env
+$ echo 'SENDGRID_DOMAIN=heroku.com'        >> .env
 $ heroku config:push
 ```
 
