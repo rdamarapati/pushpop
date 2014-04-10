@@ -2,20 +2,20 @@
 
 require 'pushover'
 
-job 'count total votes' do
+job do
 
   every 10.seconds
 
   keen do
     event_collection 'votes'
     analysis_type 'count'
-    group_by 'character'
-    timeframe 'last_7_days'
-    interval 'daily'
   end
 
-  step do |response|
-    Pushover.logger.info(response)
+  sendgrid do |response|
+    to 'josh@keen.io'
+    from 'pushover@keen.io'
+    subject "There were #{response} Votes Today!"
+    body response.inspect
   end
 
 end

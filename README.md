@@ -33,6 +33,7 @@ job do
 
   sendgrid do |response|
     to 'team@keen.io'
+    from 'pushover@keen.io'
     subject "There were #{response} Signups Today!"
     template 'signup_report.html.erb'
   end

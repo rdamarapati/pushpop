@@ -1,19 +1,12 @@
 require 'spec_helper'
-require 'plugins/keen'
 
 describe Pushover::Keen do
-  describe '#initialize' do
-    it 'should remember the block' do
-      empty_proc = Proc.new {}
-      step = Pushover::Keen.new('one', &empty_proc)
-      step.block.should == empty_proc
-    end
-  end
 
   describe '#configure' do
-    it 'should set params for each' do
 
-      step = Pushover::Keen.new('one') do
+    it 'should set various params' do
+
+      step = Pushover::Keen.new do
         event_collection 'signups'
         analysis_type 'count'
         timeframe 'last_3_days'
@@ -41,6 +34,7 @@ describe Pushover::Keen do
         }]
       step._analyses.should == [{ :analysis_type => 'count' }]
     end
+
   end
 
   describe '#run' do
