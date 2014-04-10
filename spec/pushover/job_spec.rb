@@ -21,6 +21,11 @@ describe Pushover::Job do
       job.every_options.should == {}
       block_ran.should be_true
     end
+
+    it 'should not require a name' do
+      job = Pushover::Job.new do end
+      job.name.should be_nil
+    end
   end
 
   describe '#every' do

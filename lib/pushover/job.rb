@@ -18,7 +18,7 @@ module Pushover
     attr_accessor :every_options
     attr_accessor :steps
 
-    def initialize(name, &block)
+    def initialize(name=nil, &block)
       self.name = name
       self.steps = []
       self.every_options = {}
