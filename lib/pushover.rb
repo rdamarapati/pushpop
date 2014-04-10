@@ -10,8 +10,9 @@ module Pushover
 
     self.jobs = []
 
-    def add_job(name, &block)
+    def add_job(name=nil, &block)
       self.jobs.push(Job.new(name, &block))
+      self.jobs.last
     end
 
     def run
@@ -25,7 +26,7 @@ module Pushover
 end
 
 # add into main
-def job(name, &block)
+def job(name=nil, &block)
   Pushover.add_job(name, &block)
 end
 

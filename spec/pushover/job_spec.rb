@@ -112,4 +112,38 @@ describe Pushover::Job do
     end
   end
 
+  describe '#method_missing' do
+    class FakeStep < Pushover::Step
+    end
+
+    before do
+    end
+
+    it 'should assume its a registered provider name and try to create a step' do
+      Pushover::Job.register_provider('blaz', FakeStep)
+      simple_job = job do
+        blaz 'hi' do end
+      end
+      simple_job.steps.first.name.should == 'hi'
+      simple_job.steps.first.class.should == FakeStep
+    end
+
+    it 'should not assume a name' do
+      Pushover::Job.register_provider('blaz', FakeStep)
+      simple_job = job do
+        blaz do end
+      end
+      simple_job.steps.first.name.should_not be_nil
+      simple_job.steps.first.class.should == FakeStep
+    end
+
+    it 'should raise an exception if there is no registered provider' do
+      expect {
+        job do
+          blaze do end
+        end
+      }.to raise_error /No provider defined/
+    end
+  end
+
 end

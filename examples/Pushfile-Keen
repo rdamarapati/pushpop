@@ -7,7 +7,7 @@ job 'count total votes' do
 
   every 10.seconds
 
-  step nil, 'keen' do
+  keen do
     event_collection 'votes'
     analysis_type 'count'
     group_by 'character'

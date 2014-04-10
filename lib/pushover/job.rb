@@ -11,6 +11,7 @@ module Pushover
         self.step_providers ||= {}
         self.step_providers[name.to_s] = klass
       end
+
     end
 
     attr_accessor :name
@@ -73,6 +74,19 @@ module Pushover
 
       # return the last response and all responses
       [last_response, step_responses]
+    end
+
+    def method_missing(method, *args, &block)
+      provider_class = self.class.step_providers[method.to_s]
+
+      name = args[0]
+      provider = method.to_s
+
+      if provider_class
+        step(name, provider, &block)
+      else
+        raise "No provider defined until name #{method}"
+      end
     end
 
   end
