@@ -7,7 +7,7 @@ module Pushover
     attr_accessor :block
 
     def initialize(name=nil, provider=nil, &block)
-      self.name = name || Pushover.random_name
+      self.name = name || provider || Pushover.random_name
       self.provider = provider
       self.block = block
     end

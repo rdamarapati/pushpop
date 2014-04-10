@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'clockwork'
 gem 'keen'
+gem 'twilio-ruby'
 gem 'mail'
 
 group :development, :test do

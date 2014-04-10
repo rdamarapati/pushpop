@@ -134,6 +134,7 @@ describe Pushover::Job do
         blaz do end
       end
       simple_job.steps.first.name.should_not be_nil
+      simple_job.steps.first.provider.should == 'blaz'
       simple_job.steps.first.class.should == FakeStep
     end
 
