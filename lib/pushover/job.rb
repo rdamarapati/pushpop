@@ -53,16 +53,26 @@ module Pushover
     end
 
     def run
-      step_responses = []
+
+      # track the last response, and all responses
+      last_response = nil
+      step_responses = {}
+
       self.steps.each do |step|
-        step_response = step.run(step_responses)
-        step_response == false ?
-            return : step_responses.unshift(step_response)
+
+        # track the last_response and all responses
+        last_response = step.run(last_response, step_responses)
+        step_responses[step.name] = last_response
+
+        # abort unless this step returned truthily
+        return unless last_response
       end
 
-      Pushover.logger.debug("#{name}: #{step_responses.first}")
+      # log responses in debug
+      Pushover.logger.debug("#{name}: #{step_responses}")
 
-      step_responses
+      # return the last response and all responses
+      [last_response, step_responses]
     end
 
   end

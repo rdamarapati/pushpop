@@ -77,10 +77,10 @@ describe Pushover::Job do
         end
 
         step 'two' do |response|
-          response.first + 20
+          response + 20
         end
       end
-      job.run.should == [30, 10]
+      job.run.should == [30, { 'one' => 10, 'two' => 30 }]
     end
   end
 

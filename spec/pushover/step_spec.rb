@@ -23,11 +23,14 @@ describe Pushover::Step do
 
   describe 'run' do
 
-    it 'should call the block' do
+    it 'should call the block with the same args' do
+      arg1, arg2 = nil
       times_run = 0
-      empty_proc = Proc.new { times_run += 1 }
+      empty_proc = Proc.new { |a1, a2| arg1 = a1; arg2 = a2; times_run += 1 }
       step = Pushover::Step.new('foo', &empty_proc)
-      step.run
+      step.run('foo', 'bar')
+      arg1.should == 'foo'
+      arg2.should == 'bar'
       times_run.should == 1
     end
 

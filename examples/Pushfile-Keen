@@ -12,8 +12,8 @@ job 'count total votes' do
     analysis_type 'count'
   end
 
-  step 'log' do |responses|
-    Pushover.logger.info(responses.first)
+  step 'log' do |response|
+    Pushover.logger.info(response)
   end
 
 end

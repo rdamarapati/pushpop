@@ -1,98 +1,142 @@
 # pushover
 
-Trigger actions based on the result of queries made to Keen IO at regular intervals.
+Send emails & notifications in response to analytics events.
 
-Pushover can be used for a variety of use cases:
+Here are some ways to use pushover:
 
 + Send out a daily email of your metrics
-+ Send an alerting email or SMS when a metric is out-of-whack
-+ Eagerly fetch metrics at an interval to keep a cache fresh
++ Send an alerting email or SMS when a metric has changed
++ Fetch metrics at an interval to keep a cache fresh
 
-Here's an example `Pushfile` that runs a query every 24 hours and sends an email with the results.
+Pushover contains plugins for [Keen IO](https://keen.io) and [Sendgrid](https://sendgrid.com) that make querying and emailing very easy.
+That said, pushover is totally plugin-based, and adding support for other data sources and messaging providers is encouraged!
+
+### Usage
+
+The core concepts of pushover are jobs and steps. Jobs run at regular intervals, and consist of one or more steps.
+Jobs and steps are described in a pushfile.
+
+Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an email with the results:
 
 ``` ruby
 require 'pushover'
 require 'plugins/keen'
 require 'plugins/sendgrid'
 
-module Pushover
+job 'daily email' do
 
-  job "Daily Email" do
+  every 24.hours, at: '00:00'
 
-    every 24.hours, at: "00:00"
-
-    step "keen" do
-      event_collection "signups"
-      analysis_type "count"
-    end
-
-    step "send_if_nonzero" do |response|
-      return true if response[:result] > 0
-    end
-
-    step "sendgrid" do |response|
-      to "josh@keen.io"
-      subject "#{response[:result]} Signups Today!"
-      template "foo.html.erb"
-    end
-
+  step 'fire-query', 'keen' do
+    event_collection 'signups'
+    analysis_type 'count',
+    timeframe 'last_24_hours'
   end
+
+  step 'send-email', 'sendgrid' do |response|
+    to 'team@keen.io'
+    subject "There were #{response} Signups Today!"
+    template 'signup_report.html.erb'
+  end
+
 end
 ```
 
-Pushover uses Clockwork. Clockwork creates a lightweight, long-running
-Ruby process that does work at configurable intervals. No confusing
-cron syntax required.
+When this job kicks off, the steps run synchronously, and in the order they were defined.
+First, `fire-query` step runs, using the `keen` plugin.
+The result of `fire-query` is passed to the next step, `send-email`. From there, the `sendgrid` plugin
+will send an email with the result of the query.
 
-Pushover adds some special macros on top of Clockwork to make
-implementing a query-then-act pattern easy.
+### Setup
 
-Taking action can be made conditional on the result of a query. This is
-useful for generating notifications when anomalous conditions arise.
+Setting up your own pushover instance is very easy.
 
-### Configuration
+First, clone or fork this repository, then install dependencies:
 
-keen-rules can be configured in code or loaded via a JSON file.
-Here's an example JSON:
-
-
-``` json
-{
-  "rules" : [{
-    "name" : "CheckFailed",
-    "description" : "Send an email if a URL check failed",
-    "frequency" : "300",
-    "query" : {
-      "analysis_type" : "count",
-      "event_collection" : "checks",
-      "timeframe": "last_5_minutes",
-      "filters" : [{
-        "property_name" : "response.code",
-        "operator" : "ne",
-        "property_value" : "200"
-      }]
-    },
-    "tests" : [{
-      "path" : "result",
-      "op" : "more",
-      "value" : "0"
-    }],
-    "actions" : [{
-      "type" : "sendgrid",
-      "to" : "josh@keen.io",
-      "subject" : "[error] A URL Check has failed"
-    }]
-  }]
-}
+``` shell
+$ git clone git@github.com:keenlabs/pushover.git
+$ cd pushover
+$ bundle install
 ```
 
-Along with name and description metadata, rules have 3 main parts: the query to
-run, the tests to perform on the response body, and the actions to take.
+The repository comes with a very simple `Pushfile` located in the project's root. This `Pushfile` is the
+default for rake tasks. Try a rake task now:
 
-### Usage
+``` shell
+$ bundle exec rake jobs:test
+```
 
-keen-rules can be used
+the `jobs:test` rake task runs each job just once, so you can see what it'll do. another rake task, `jobs:run`,
+will run the jobs at the intervals you've defined.
 
-### Test-free
+``` shell
+$ bundle exec rake jobs:run
+```
 
-You can also use keen-rules to email query results at an interval.
+You can also run rake tasks using a different Pushfile inside the project folder. Just add an argument to the rake task.
+
+``` shell
+$ bundle exec rake jobs:run[examples/Pushfile-Keen]
+```
+
+The default `Pushfile` isn't very interesting. You should change it to add the tasks you want to run. If you change it,
+make sure to commit.
+
+``` shell
+$ git add Pushfile
+$ git commit -m 'Added my jobs'
+```
+
+For example, if you have a job configured to run `every 10.minutes`, this process sleep for 10 minutes, wake up
+and run your job, then repeat that process indefinitely.
+Note: This process will run indefinitely until it is killed. This is the process to run when you deploy.
+
+### Deployment
+
+Pushover uses Clockwork to schedule jobs. Clockwork creates a lightweight, long-running
+Ruby process that does work at configurable intervals. It doesn't install anything into cron,
+and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
+
+Here's how to deploy to Heroku.
+
+First, create a new Heroku app. Make sure you're within your `pushover` project directory.
+
+``` shelll
+$ heroku create
+```
+
+Now, upload configuration to your Heroku app. If you're using Keen and Sendgrid, you'll need to specify
+the environment variables they expect. An easy way to upload Heroku configs is using the heroku:config plugin,
+which uses a .env file in the project directory.
+
+``` shell
+$ echo 'KEEN_PROJECT_ID=<my-project-id>' >> .env
+$ echo 'KEEN_READ_KEY=<my-read-key>' >> .env
+$ echo 'SENDGRID_USERNAME=<my-username>' >> .env
+$ echo 'SENDGRID_PASSWORD=<my-password>' >> .env
+$ heroku config:push
+```
+
+Now push to Heroku:
+
+```
+$ git push heroku master
+```
+
+Lastly, make sure you have the right processes running. Pushover uses 1 worker (see the `Procfile`).
+
+``` shell
+$ heroku scale worker=1
+```
+
+Your pushover should be up and running. Tail the Heroku logs to see your jobs run:
+
+``` shell
+$ heroku logs --tail
+```
+
+### Recipes
+
+Here are some ways to use pushover to do common tasks.
+
+TO BE CONTINUED!

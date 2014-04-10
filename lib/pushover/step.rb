@@ -12,8 +12,8 @@ module Pushover
       self.block = block
     end
 
-    def run(step_responses=nil)
-      block.call(step_responses)
+    def run(last_response=nil, step_responses=nil)
+      block.call(last_response, step_responses)
     end
 
   end

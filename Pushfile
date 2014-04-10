@@ -13,10 +13,10 @@ require 'pushover'
 job 'Simple Math' do
   every 1.seconds
   step 'return 10' do 10 end
-  step 'add 20 to previous step' do |responses|
-    20 + responses.first
+  step 'add 20 to previous step' do |response|
+    20 + response
   end
-  step 'print result' do |responses|
-    puts responses.first
+  step 'print result' do |response|
+    puts response
   end
 end
