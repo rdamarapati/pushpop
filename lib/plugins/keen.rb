@@ -6,8 +6,6 @@ module Pushover
 
     PROVIDER_NAME = 'keen'
 
-    attr_accessor :name
-
     attr_accessor :_event_collection
     attr_accessor :_analysis_type
     attr_accessor :_timeframe
