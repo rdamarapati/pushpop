@@ -9,5 +9,4 @@ group :development, :test do
   gem 'rake'
   gem 'rspec'
   gem 'webmock'
-  gem 'debugger'
 end

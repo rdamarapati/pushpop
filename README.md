@@ -335,8 +335,8 @@ Here's an example:
 job 'send an email' do
 
   sendgrid do
-    to 'josh@keen.io'
-    from 'pushoverapp+123@gmail.com'
+    to 'josh+pushover@keen.io'
+    from 'pushoverapp+123@keen.io'
     subject "Hey, ho, Let's go!"
     body 'This page was intentionally left blank.'
   end

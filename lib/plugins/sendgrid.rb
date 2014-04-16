@@ -20,22 +20,19 @@ module Pushover
     attr_accessor :_to
     attr_accessor :_subject
     attr_accessor :_body
-    attr_accessor :_template
-    attr_accessor :_locals
+    attr_accessor :_preview
 
     def run(last_response=nil, step_responses=nil)
 
       self.configure(last_response, step_responses)
 
+      # print the message if its just a preview
+      return print_preview if self._preview
+
       _to = self._to
       _from = self._from
       _subject = self._subject
-
-      if self._template
-        _body = self._template
-      else
-        _body = self._body
-      end
+      _body = self._body
 
       Mail.deliver do
         to _to
@@ -67,13 +64,28 @@ module Pushover
       self._subject = subject
     end
 
-    def body(body)
-      self._body = body
+    def preview(preview)
+      self._preview = preview
     end
 
-    def template(template, locals)
-      self._template = template
-      self._locals = locals
+    def body(*args)
+      if args.length == 1
+        self._body = args.first
+      else
+        self._body = template *args
+      end
+    end
+
+    private
+
+    def print_preview
+      puts <<MESSAGE
+To: #{self._to}
+From: #{self._from}
+Subject: #{self._subject}
+
+      #{self._body}
+MESSAGE
     end
 
   end

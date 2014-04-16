@@ -1,1 +1,1 @@
-worker: bundle exec rake jobs:run[examples/Pushfile-Keen]
+worker: bundle exec rake jobs:run[./Pushfile]

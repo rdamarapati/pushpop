@@ -1,0 +1,13 @@
+<table cellpadding="5" cellspacing="5">
+  <tr>
+    <th>Check Name</th>
+    <th>Average Response Time</th>
+  </tr>
+<% sorted_results = response.sort_by { |check| check['result'] }.reverse %>
+<% sorted_results.each do |check_result| %>
+  <tr>
+    <td><%= check_result['check.name'] %></td>
+    <td><%= check_result['result'] %></td>
+  </tr>
+<% end %>
+</table>

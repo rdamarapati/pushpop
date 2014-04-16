@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+SPEC_TEMPLATES_DIRECTORY = File.expand_path('../../templates', __FILE__)
+
 describe Pushover::Step do
 
   describe 'initialize' do
@@ -50,6 +52,18 @@ describe Pushover::Step do
       times_run.should == 1
     end
 
+  end
+
+  describe 'template' do
+    it 'should render the named template with the response binding' do
+      step = Pushover::Step.new
+      step.template('spec.html.erb', 500, {}, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>500</pre>'
+    end
+
+    it 'should render the named template with the step_response binding' do
+      step = Pushover::Step.new
+      step.template('spec.html.erb', nil, { :test => 600 }, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>600</pre>'
+    end
   end
 
 end
