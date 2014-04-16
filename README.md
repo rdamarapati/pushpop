@@ -2,7 +2,11 @@
 
 Send emails & notifications in response to analytics events.
 
-Here are some ways to use pushover:
+<img src="http://f.cl.ly/items/3F3X2s2d2A1I1o0V3p1n/image.png" width="40%" alt="There were 5402 Pageviews today!">
+&nbsp;&nbsp;&nbsp;
+<img src="http://f.cl.ly/items/3F3X2s2d2A1I1o0V3p1n/image.png" width="40%" alt="There were 5402 Pageviews today!">
+
+Here are some ways to use Pushover:
 
 + Send a daily metrics email
 + Send an email or SMS alert when a metric has changed
@@ -11,14 +15,14 @@ Here are some ways to use pushover:
 Pushover currently includes plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
 Pushover is plugin-based, and our goal is to add support for more data sources and messaging systems. See [Contributing](#Contributing) below.
 
-Protip: Pushover works great with [Pingpong](https://github.com/keenlabs/pingpong.git). (Pingpong lets you ping URLs and record response information as Keen events.)
-Specifically, Pushover makes it easy to get custom alerts when Pingpong checks fail.
+Pushover works great with [Pingpong](https://github.com/keenlabs/pingpong.git), another open source project from your pals at Keen IO. Pingpong pings URLs at various frequencies and records response information as a Keen event.
+Pairing Pushover with Pingpong makes it easy to get custom alerts when Pingpong checks fail. And it's one hell of an alliteration.
 
 ### Usage
 
-The core concepts of Pushover are jobs and steps. Jobs run at regular intervals, and consist of one or more steps that run in sequence. Jobs and steps are described in a `Pushfile`.
+The core building blocks of Pushover are jobs and steps. Jobs consist of multiple steps. Jobs and steps are defined in a `Pushfile`.
 
-Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an email with the results:
+Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an SMS containing the results:
 
 ``` ruby
 require 'pushover'
@@ -44,7 +48,7 @@ end
 In the example above, the `keen` step runs first and does a count of `pageviews` over the last 24 hours.
 The number of `pageviews` is passed into the `twilio` step, which sends an SMS to the provided phone number.
 
-### Running locally
+### Run Pushover locally
 
 Setting up your own Pushover instance is very easy.
 
@@ -73,7 +77,7 @@ $ bundle exec rake jobs:run
 Pushover uses [Clockwork](https://github.com/tomykaira/clockwork) to schedule jobs. Clockwork creates a lightweight, long-running Ruby process that does work at configurable intervals. It doesn't install anything into cron,
 and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
 
-This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job you have defined at the times specified in the Pushfile.
+This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job at the times specified in the Pushfile.
 
 You can also run rake tasks using a different Pushfile inside the project folder. Just add an argument to the rake task.
 
@@ -100,8 +104,7 @@ $ heroku create
 ```
 
 Now, upload configuration to your Heroku app. If you're using Keen and Sendgrid, you'll need to specify
-the environment variables they expect. An easy way to upload Heroku configs is using the heroku:config plugin,
-which uses a .env file in the project directory.
+the environment variables they expect. (You can also add `keen` and `sendgrid` as Heroku add-ons.)
 
 ``` shell
 $ echo 'KEEN_PROJECT_ID=<my-project-id>'   >> .env
@@ -109,7 +112,7 @@ $ echo 'KEEN_READ_KEY=<my-read-key>'       >> .env
 $ echo 'SENDGRID_USERNAME=<my-username>'   >> .env
 $ echo 'SENDGRID_PASSWORD=<my-password>'   >> .env
 $ echo 'SENDGRID_DOMAIN=heroku.com'        >> .env
-$ heroku config:push
+$ heroku config:push                       # make sure heroku-config plugin is installed
 ```
 
 Now push to Heroku:
@@ -130,7 +133,7 @@ Your Pushover should be up and running. Tail the Heroku logs to see your jobs ru
 $ heroku logs --tail
 ```
 
-### How steps work
+### The Pushover DSL + API
 
 Steps and jobs are the heart of the Pushover DSL (domain-specific language). A `Pushfile` contains one or more jobs,
 and jobs contain one or more steps.
@@ -358,6 +361,7 @@ job 'send a text' do
   end
 
 end
+```
 
 The `twilio` plugin requires that the following environment variables are set: `TWILIO_AUTH_TOKEN`, `TWILIO_SID`, and `TWILIO_FROM`.
 
