@@ -9,8 +9,8 @@ Send emails & notifications in response to analytics events.
 Here are some ways to use Pushover:
 
 + Send a daily metrics email
-+ Send an email or SMS alert when a metric has changed
-+ Fetch metrics at an interval to keep a cache fresh
++ Send an SMS in response to key business events
++ Alert when a metric has increased or decreased
 
 Pushover currently includes plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
 Pushover is plugin-based, and our goal is to add support for more data sources and messaging systems. See [Contributing](#Contributing) below.
@@ -48,7 +48,7 @@ end
 In the example above, the `keen` step runs first and does a count of `pageviews` over the last 24 hours.
 The number of `pageviews` is passed into the `twilio` step, which sends an SMS to the provided phone number.
 
-### Run Pushover locally
+### Setup locally
 
 Setting up your own Pushover instance is very easy.
 
