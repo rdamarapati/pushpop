@@ -17,6 +17,7 @@ job 'Simple Math' do
     20 + response
   end
   step do |response|
-    puts response
+    puts 'Hello new Pushover user, let\'s do a math!'
+    puts "10 + 20 = #{response}"
   end
 end

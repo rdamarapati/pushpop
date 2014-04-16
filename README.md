@@ -8,8 +8,8 @@ Here are some ways to use pushover:
 + Send an email or SMS alert when a metric has changed
 + Fetch metrics at an interval to keep a cache fresh
 
-Pushover currently ships with plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
-Pushover is entirely plugin-based, and our goal is to add support for many more data sources and messaging systems. Pull requests welcome!
+Pushover currently includes plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
+Pushover is plugin-based, and our goal is to add support for more data sources and messaging systems. See [Contributing](#Contributing) below.
 
 Protip: Pushover works great with [Pingpong](https://github.com/keenlabs/pingpong.git). (Pingpong lets you ping URLs and record response information as Keen events.)
 Specifically, Pushover makes it easy to get custom alerts when Pingpong checks fail.
@@ -44,11 +44,11 @@ end
 In the example above, the `keen` step runs first and does a count of `pageviews` over the last 24 hours.
 The number of `pageviews` is passed into the `twilio` step, which sends an SMS to the provided phone number.
 
-### Setup
+### Running locally
 
 Setting up your own Pushover instance is very easy.
 
-First, clone or fork this repository, then install dependencies:
+First clone or fork this repository, then install dependencies:
 
 ``` shell
 $ git clone git@github.com:keenlabs/pushover.git
@@ -82,7 +82,7 @@ $ bundle exec rake jobs:run[examples/Pushfile-Keen]
 ```
 
 The default `Pushfile` isn't very interesting. You should change it to add the tasks you want to run. If you change it,
-make sure to commit.
+make sure to commit before you deploy.
 
 ``` shell
 $ git add Pushfile
@@ -158,6 +158,21 @@ end
 Inside of a `job` configuration block, steps are added by using the `step` method. They can also be
 added by using a method registered by a plugin, like `keen` or `twilio`. For more information, see [Plugins](#plugins).
 
+The frequency of the job is set via the `every` method. This is basically a passthrough to Clockwork.
+Here are some cool things you can do:
+
+``` ruby
+every 5.seconds
+every 24.hours, :at => '12:00'
+every 24.hours, :at => ['00:00', '12:00']
+every 24.hours, :at => '**:05'
+every 24.hours, :at => '00:00', :tz => 'UTC'
+every 5.seconds, :at => '10:**'
+every 1.week, :at => 'Monday 12:30'
+```
+
+See the full set of options on the [Clockwork README](https://github.com/tomykaira/clockwork#event-parameters).
+
 ##### Job workflow
 
 When a job kicks off, steps are run serially in the order they are specified. Each step is invoked with 2
@@ -196,7 +211,8 @@ job 'lame job' do
 end
 ```
 
-This behavior is the backbone of how *conditional* alerting works. Here's an example of conditional alerting:
+This behavior is designed to make *conditional* alerting easy. Here's an example of a job that only sends an alert
+for certain query responses:
 
 ``` ruby
 job do
@@ -236,7 +252,7 @@ Steps can be pure Ruby code, or in the case of a plugin calling into a DSL.
 
 Here are some ways to use Pushover to do common tasks.
 
-##### Use with Pingpong
+##### Error alerting with Pingpong
 
 [Pingpong](https://github.com/keenlabs/pingpong.git) captures HTTP request/response data for remote URLs.
 By pairing Pingpong with Pushover, you can get custom alerts and reports about the web performance and
@@ -254,9 +270,9 @@ job do
     analysis_type 'count'
     timeframe 'last_1_minute'
     filters [{
-      property_name: "response.status",
-      operator: "lte",
-      property_value: 400
+      property_name: "response.successful",
+      operator: "eq",
+      property_value: false
     }]
   end
 
@@ -271,7 +287,129 @@ job do
 end
 ```
 
+### Plugin Documentation
+
+All plugins are located at `lib/plugins`. They are loaded automatically.
+
+##### Keen
+
+The `keen` plugin gives you a DSL to specify Keen query parameters. When it runs, it
+passes those parameters to the [keen gem](https://github.com/keenlabs/keen-gem), which
+in turn runs the query against the Keen IO API.
+
+Here's an example that shows most of the options you can specify:
+
+``` ruby
+job 'daily average response time by check for successful requests in april' do
+
+  keen do
+    event_collection  'checks'
+    analysis_type     'average'
+    target_property   'request.duration'
+    group_by          'check.name'
+    interval          'daily'
+    timeframe         { :start => '2014-04-01T00:00Z' }
+    filters           [{ property_name: "response.successful",
+                         operator: "eq",
+                         property_value: true }]
+  end
+
+end
+```
+
+The `keen` plugin requires that the following environment variables are set: `KEEN_PROJECT_ID` and `KEEN_READ_KEY`.
+
+A `steps` method is also supported for [funnels](https://keen.io/docs/data-analysis/funnels/),
+as well as `analyses` for doing a [multi-analysis](https://keen.io/docs/data-analysis/multi-analysis/).
+
+##### Sendgrid
+
+The `sendgrid` plugin gives you a DSL to specify email recipient information, as well as the subject and body.
+
+Here's an example:
+
+``` ruby
+job 'send an email' do
+
+  sendgrid do
+    to 'josh@keen.io'
+    from 'pushoverapp+123@gmail.com'
+    subject "Hey, ho, Let's go!"
+    body 'This page was intentionally left blank.'
+  end
+
+end
+```
+
+The `sendgrid` plugin requires that the following environment variables are set: `SENDGRID_DOMAIN`, `SENDGRID_USERNAME`, and `SENDGRID_PASSWORD`.
+
+##### Twilio
+
+The `twilio` plugin gives you a DSL to specify SMS recipient information as well as the text itself.
+
+Here's an example:
+
+``` ruby
+job 'send a text' do
+
+  twilio do
+    to '18005555555'
+    body 'Breathe in through the nose, out through the mouth.'
+  end
+
+end
+
+The `twilio` plugin requires that the following environment variables are set: `TWILIO_AUTH_TOKEN`, `TWILIO_SID`, and `TWILIO_FROM`.
+
 ### Creating plugins
 
-Coming soon!
+Plugins are just subclasses of `Pushover::Step`. Plugins should implement a run method, and
+register themselves. Here's a simple plugin that stops job execution if the input into the step is 0:
+
+``` ruby
+module Pushover
+
+  class BreakIfZero < Step
+
+    PLUGIN_NAME = 'break_if_zero'
+
+    def run(last_response=nil, step_responses=nil)
+      last_response == 0
+    end
+
+  end
+
+  Pushover::Job.register_plugin(BreakIfZero::PLUGIN_NAME, BreakIfZero)
+
+end
+
+# now in your job you can use the break_if_zero step
+
+job do
+
+  step do
+    [0, 1].shuffle.first
+  end
+
+  break_if_zero
+
+  step do
+    puts 'made it through!'
+  end
+
+end
+```
+
+### Contributing
+
+Issues and pull requests are welcome! Some ideas are to:
+
++ Add more plugins!
++ Add a web interface that lets you preview emails in the browser
+
+Pushover has a full set of specs (including plugins). Run them like this:
+
+``` shell
+$ bundle exec rake spec
+```
 
