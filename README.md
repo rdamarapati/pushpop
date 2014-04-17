@@ -48,7 +48,7 @@ end
 In the example above, the `keen` step runs first and does a count of `pageviews` over the last 24 hours.
 The number of `pageviews` is passed into the `twilio` step, which sends an SMS to the provided phone number.
 
-### Setup locally
+### Local setup
 
 Setting up your own Pushover instance is very easy.
 
@@ -269,6 +269,13 @@ end
 The first argument is a template file name, located in the `templates` directory by default.
 The second and third arguments are the response and step_responses respectively.
 An optional fourth parameter can be used to change the path templates are looked for in.
+
+Here's a very simple template:
+
+``` html
+<h1>Daily Report</h1>
+<p>We got <%= response %> new users today!</p>
+```
 
 ### Recipes
 
