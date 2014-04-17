@@ -251,6 +251,25 @@ Steps have the following attributes:
 
 Steps can be pure Ruby code, or in the case of a plugin calling into a DSL.
 
+Steps have built-in support for ERB templating. This is useful for generating more complex emails and reports.
+
+Here's an example that uses a template:
+
+``` ruby
+sendgrid do |response, step_responses|
+  to 'josh+pushover@keen.io'
+  from 'pushoverapp+123@keen.io'
+  subject 'Pingpong Daily Response Time Report'
+  body template 'pingpong_report.html.erb', response, step_responses
+  preview false
+end
+```
+
+`template` is a function that renders a template in context of the step responses and returns a string.
+The first argument is a template file name, located in the `templates` directory by default.
+The second and third arguments are the response and step_responses respectively.
+An optional fourth parameter can be used to change the path templates are looked for in.
+
 ### Recipes
 
 Here are some ways to use Pushover to do common tasks.
@@ -289,6 +308,12 @@ job do
   end
 end
 ```
+
+##### Daily response time email report
+
+See [Keen-Sendgrid.Pushfile](examples/Keen-Sendgrid.Pushfile) and the
+[corresponding template](examples/templates/pingpong_report.html.erb).
+
 
 ### Plugin Documentation
 
@@ -337,14 +362,25 @@ job 'send an email' do
   sendgrid do
     to 'josh+pushover@keen.io'
     from 'pushoverapp+123@keen.io'
-    subject "Hey, ho, Let's go!"
+    subject 'Hey, ho, Let's go!'
     body 'This page was intentionally left blank.'
+    preview false
   end
 
 end
 ```
 
 The `sendgrid` plugin requires that the following environment variables are set: `SENDGRID_DOMAIN`, `SENDGRID_USERNAME`, and `SENDGRID_PASSWORD`.
+
+The `preview` directive is optional and defaults to false. If you set it to true, the email contents will print out
+to the console, but the email will not send.
+
+The `body` method can take a string, or it can take the same parameters as `template`,
+in which case it will render a template to create the body. For example:
+
+``` ruby
+body 'pingpong_report.html.erb', response, step_responses
+```
 
 ##### Twilio
 
@@ -372,35 +408,22 @@ register themselves. Here's a simple plugin that stops job execution if the inpu
 
 ``` ruby
 module Pushover
-
   class BreakIfZero < Step
-
     PLUGIN_NAME = 'break_if_zero'
-
     def run(last_response=nil, step_responses=nil)
       last_response == 0
     end
-
   end
 
   Pushover::Job.register_plugin(BreakIfZero::PLUGIN_NAME, BreakIfZero)
-
 end
 
 # now in your job you can use the break_if_zero step
 
 job do
-
-  step do
-    [0, 1].shuffle.first
-  end
-
+  step do [0, 1].shuffle.first end
   break_if_zero
-
-  step do
-    puts 'made it through!'
-  end
-
+  step do puts 'made it through!' end
 end
 ```
 
@@ -416,4 +439,3 @@ Pushover has a full set of specs (including plugins). Run them like this:
 ``` shell
 $ bundle exec rake spec
 ```
-
