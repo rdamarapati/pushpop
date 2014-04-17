@@ -272,7 +272,7 @@ An optional fourth parameter can be used to change the path templates are looked
 
 Here's a very simple template:
 
-``` html
+``` erb
 <h1>Daily Report</h1>
 <p>We got <%= response %> new users today!</p>
 ```
