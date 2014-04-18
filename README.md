@@ -39,7 +39,7 @@ job do
 
   twilio do |response|
     to '+18005555555'
-    body "There were #{response} Pageviews Today!"
+    body "There were #{response} pageviews today!"
   end
 
 end
@@ -50,13 +50,14 @@ The number of `pageviews` is passed into the `twilio` step, which sends an SMS t
 
 ### Local setup
 
-Setting up your own Pushpop instance is very easy.
+Setting up your own Pushpop instance is very easy. The only prerequisite is a working Ruby installation.
 
 First clone or fork this repository, then install dependencies:
 
 ``` shell
 $ git clone git@github.com:keenlabs/pushpop.git
 $ cd pushpop
+$ gem install bundler
 $ bundle install
 ```
 
