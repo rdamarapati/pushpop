@@ -1,4 +1,5 @@
 # Pushpop
+[![Build Status](https://travis-ci.org/keenlabs/pushpop.svg)](https://travis-ci.org/keenlabs/pushpop)
 
 Send emails & notifications in response to analytics events.
 <hr>
