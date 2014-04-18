@@ -4,7 +4,7 @@ EXAMPLE_TEMPLATES_DIRECTORY = File.expand_path('../templates', __FILE__)
 
 # This example creates a Pingpong-compatible check response time report
 
-require 'pushover'
+require 'pushpop'
 
 job do
 
@@ -19,8 +19,8 @@ job do
   end
 
   sendgrid do |response, step_responses|
-    to 'josh+pushover@keen.io'
-    from 'josh+pushover@keen.io'
+    to 'josh+pushpop@keen.io'
+    from 'josh+pushpop@keen.io'
     subject 'Pingpong Daily Response Time Report'
     body 'pingpong_report.html.erb', response, step_responses, EXAMPLE_TEMPLATES_DIRECTORY
     preview ENV['PREVIEW']

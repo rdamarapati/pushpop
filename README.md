@@ -1,4 +1,4 @@
-# Pushover
+# Pushpop
 
 Send emails & notifications in response to analytics events.
 <hr>
@@ -6,26 +6,26 @@ Send emails & notifications in response to analytics events.
 &nbsp;&nbsp;&nbsp;
 <img src="http://f.cl.ly/items/3F3X2s2d2A1I1o0V3p1n/image.png" width="45%" alt="There were 5402 Pageviews today!">
 <hr>
-Here are some ways to use Pushover:
+Here are some ways to use Pushpop:
 
 + Send a daily metrics email
 + Send an SMS in response to key business events
 + Alert when a metric has increased or decreased
 
-Pushover currently includes plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
-Pushover is plugin-based, and our goal is to add support for more data sources and messaging systems. See [Contributing](#Contributing) below.
+Pushpop currently includes plugins for [Keen IO](https://keen.io/), [Twilio](https://twilio.com/), and [Sendgrid](https://sendgrid.com/).
+Pushpop is plugin-based, and our goal is to add support for more data sources and messaging systems. See [Contributing](#Contributing) below.
 
-Pushover works great with [Pingpong](https://github.com/keenlabs/pingpong.git), another open source project from your pals at Keen IO. Pingpong pings URLs at various frequencies and records response information as a Keen event.
-Pairing Pushover with Pingpong makes it easy to get custom alerts when Pingpong checks fail. And it's one hell of an alliteration.
+Pushpop works great with [Pingpong](https://github.com/keenlabs/pingpong.git), another open source project from your pals at Keen IO. Pingpong pings URLs at various frequencies and records response information as a Keen event.
+Pairing Pushpop with Pingpong makes it easy to get custom alerts when Pingpong checks fail. And it's one hell of an alliteration.
 
 ### Usage
 
-The core building blocks of Pushover are jobs and steps. Jobs consist of multiple steps. Jobs and steps are defined in a `Pushfile`.
+The core building blocks of Pushpop are jobs and steps. Jobs consist of multiple steps. Jobs and steps are defined in a `Pushfile`.
 
 Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an SMS containing the results:
 
 ``` ruby
-require 'pushover'
+require 'pushpop'
 
 job do
 
@@ -50,13 +50,13 @@ The number of `pageviews` is passed into the `twilio` step, which sends an SMS t
 
 ### Local setup
 
-Setting up your own Pushover instance is very easy.
+Setting up your own Pushpop instance is very easy.
 
 First clone or fork this repository, then install dependencies:
 
 ``` shell
-$ git clone git@github.com:keenlabs/pushover.git
-$ cd pushover
+$ git clone git@github.com:keenlabs/pushpop.git
+$ cd pushpop
 $ bundle install
 ```
 
@@ -74,7 +74,7 @@ will run the jobs at the intervals you've defined.
 $ bundle exec rake jobs:run
 ```
 
-Pushover uses [Clockwork](https://github.com/tomykaira/clockwork) to schedule jobs. Clockwork creates a lightweight, long-running Ruby process that does work at configurable intervals. It doesn't install anything into cron,
+Pushpop uses [Clockwork](https://github.com/tomykaira/clockwork) to schedule jobs. Clockwork creates a lightweight, long-running Ruby process that does work at configurable intervals. It doesn't install anything into cron,
 and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
 
 This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job at the times specified in the Pushfile.
@@ -97,7 +97,7 @@ $ git commit -m 'Added my jobs'
 
 Here's how to deploy to Heroku.
 
-First, create a new Heroku app. Make sure you're within your `pushover` project directory.
+First, create a new Heroku app. Make sure you're within your `pushpop` project directory.
 
 ``` shelll
 $ heroku create
@@ -121,21 +121,21 @@ Now push to Heroku:
 $ git push heroku master
 ```
 
-Lastly, make sure you have the right processes running. Pushover uses 1 worker (see the `Procfile`).
+Lastly, make sure you have the right processes running. Pushpop uses 1 worker (see the `Procfile`).
 
 ``` shell
 $ heroku scale worker=1
 ```
 
-Your Pushover should be up and running. Tail the Heroku logs to see your jobs run:
+Your Pushpop should be up and running. Tail the Heroku logs to see your jobs run:
 
 ``` shell
 $ heroku logs --tail
 ```
 
-### The Pushover DSL + API
+### The Pushpop DSL + API
 
-Steps and jobs are the heart of the Pushover DSL (domain-specific language). A `Pushfile` contains one or more jobs,
+Steps and jobs are the heart of the Pushpop DSL (domain-specific language). A `Pushfile` contains one or more jobs,
 and jobs contain one or more steps.
 
 #### Jobs
@@ -257,8 +257,8 @@ Here's an example that uses a template:
 
 ``` ruby
 sendgrid do |response, step_responses|
-  to 'josh+pushover@keen.io'
-  from 'pushoverapp+123@keen.io'
+  to 'josh+pushpop@keen.io'
+  from 'pushpopapp+123@keen.io'
   subject 'Pingpong Daily Response Time Report'
   body template 'pingpong_report.html.erb', response, step_responses
   preview false
@@ -279,12 +279,12 @@ Here's a very simple template:
 
 ### Recipes
 
-Here are some ways to use Pushover to do common tasks.
+Here are some ways to use Pushpop to do common tasks.
 
 ##### Error alerting with Pingpong
 
 [Pingpong](https://github.com/keenlabs/pingpong.git) captures HTTP request/response data for remote URLs.
-By pairing Pingpong with Pushover, you can get custom alerts and reports about the web performance and
+By pairing Pingpong with Pushpop, you can get custom alerts and reports about the web performance and
 availability you're attempting to observe.
 
 Here's a `Pushfile` recipe that sends an SMS if any check had errors in the last minute.
@@ -367,8 +367,8 @@ Here's an example:
 job 'send an email' do
 
   sendgrid do
-    to 'josh+pushover@keen.io'
-    from 'pushoverapp+123@keen.io'
+    to 'josh+pushpop@keen.io'
+    from 'pushpopapp+123@keen.io'
     subject 'Hey, ho, Let's go!'
     body 'This page was intentionally left blank.'
     preview false
@@ -410,11 +410,11 @@ The `twilio` plugin requires that the following environment variables are set: `
 
 ### Creating plugins
 
-Plugins are just subclasses of `Pushover::Step`. Plugins should implement a run method, and
+Plugins are just subclasses of `Pushpop::Step`. Plugins should implement a run method, and
 register themselves. Here's a simple plugin that stops job execution if the input into the step is 0:
 
 ``` ruby
-module Pushover
+module Pushpop
   class BreakIfZero < Step
     PLUGIN_NAME = 'break_if_zero'
     def run(last_response=nil, step_responses=nil)
@@ -422,7 +422,7 @@ module Pushover
     end
   end
 
-  Pushover::Job.register_plugin(BreakIfZero::PLUGIN_NAME, BreakIfZero)
+  Pushpop::Job.register_plugin(BreakIfZero::PLUGIN_NAME, BreakIfZero)
 end
 
 # now in your job you can use the break_if_zero step
@@ -441,7 +441,7 @@ Issues and pull requests are welcome! Some ideas are to:
 + Add more plugins!
 + Add a web interface that lets you preview emails in the browser
 
-Pushover has a full set of specs (including plugins). Run them like this:
+Pushpop has a full set of specs (including plugins). Run them like this:
 
 ``` shell
 $ bundle exec rake spec

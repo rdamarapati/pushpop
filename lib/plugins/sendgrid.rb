@@ -10,7 +10,7 @@ Mail.defaults do
                            :enable_starttls_auto => true }
 end
 
-module Pushover
+module Pushpop
 
   class Sendgrid < Step
 
@@ -90,5 +90,5 @@ MESSAGE
 
   end
 
-  Pushover::Job.register_plugin(Sendgrid::PLUGIN_NAME, Sendgrid)
+  Pushpop::Job.register_plugin(Sendgrid::PLUGIN_NAME, Sendgrid)
 end

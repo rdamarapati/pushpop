@@ -4,7 +4,7 @@ TWILIO_SID = ENV['TWILIO_SID']
 TWILIO_AUTH_TOKEN = ENV['TWILIO_AUTH_TOKEN']
 TWILIO_FROM = ENV['TWILIO_FROM']
 
-module Pushover
+module Pushpop
 
   class Twilio < Step
 
@@ -48,5 +48,5 @@ module Pushover
 
   end
 
-  Pushover::Job.register_plugin(Twilio::PLUGIN_NAME, Twilio)
+  Pushpop::Job.register_plugin(Twilio::PLUGIN_NAME, Twilio)
 end

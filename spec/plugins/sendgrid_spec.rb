@@ -2,13 +2,13 @@ require 'spec_helper'
 
 SPEC_TEMPLATES_DIRECTORY = File.expand_path('../../templates', __FILE__)
 
-describe Pushover::Sendgrid do
+describe Pushpop::Sendgrid do
 
   describe '#configure' do
 
     it 'should set various params' do
 
-      step = Pushover::Sendgrid.new do
+      step = Pushpop::Sendgrid.new do
         to 'josh@keen.io'
         from 'depths@hell.com'
         subject 'time is up'
@@ -34,9 +34,9 @@ describe Pushover::Sendgrid do
 
       Mail.stub(:deliver)
 
-      step = Pushover::Sendgrid.new do |response|
+      step = Pushpop::Sendgrid.new do |response|
         to 'josh@keen.io'
-        from 'alerts+pushover@keen.io'
+        from 'alerts+pushpop@keen.io'
         subject "There were #{response} Pageviews Today!"
         body 'hey wats up'
       end
@@ -50,13 +50,13 @@ describe Pushover::Sendgrid do
   describe '#body' do
 
     it 'should use a string if given 1 arg' do
-      step = Pushover::Sendgrid.new
+      step = Pushpop::Sendgrid.new
       step.body 'hello world'
       step._body.should == 'hello world'
     end
 
     it 'should use a template if more than 1 arg is passed' do
-      step = Pushover::Sendgrid.new
+      step = Pushpop::Sendgrid.new
       step.body('spec.html.erb', 500, {}, SPEC_TEMPLATES_DIRECTORY)
       step._body.strip.should == '<pre>500</pre>'
     end

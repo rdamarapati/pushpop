@@ -2,11 +2,11 @@ require 'webmock/rspec'
 
 $: << File.join(File.dirname(__FILE__), '../lib')
 
-require 'pushover'
+require 'pushpop'
 
 RSpec.configure do |config|
   config.before :each do
-    Pushover.jobs.clear
-    Pushover::Job.step_plugins.clear
+    Pushpop.jobs.clear
+    Pushpop::Job.step_plugins.clear
   end
 end

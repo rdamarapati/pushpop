@@ -2,13 +2,13 @@ require 'spec_helper'
 
 SPEC_TEMPLATES_DIRECTORY = File.expand_path('../../templates', __FILE__)
 
-describe Pushover::Step do
+describe Pushpop::Step do
 
   describe 'initialize' do
 
     it 'should set a name, a plugin, and a block' do
       empty_proc = Proc.new {}
-      step = Pushover::Step.new('foo', 'foopie', &empty_proc)
+      step = Pushpop::Step.new('foo', 'foopie', &empty_proc)
       step.name.should == 'foo'
       step.plugin.should == 'foopie'
       step.block.should == empty_proc
@@ -16,7 +16,7 @@ describe Pushover::Step do
 
     it 'should auto-generate a name if not given and plugin not given' do
       empty_proc = Proc.new {}
-      step = Pushover::Step.new(&empty_proc)
+      step = Pushpop::Step.new(&empty_proc)
       step.name.should_not be_nil
       step.plugin.should be_nil
       step.block.should == empty_proc
@@ -24,7 +24,7 @@ describe Pushover::Step do
 
     it 'should set name to plugin name if not given' do
       empty_proc = Proc.new {}
-      step = Pushover::Step.new(nil, 'keen', &empty_proc)
+      step = Pushpop::Step.new(nil, 'keen', &empty_proc)
       step.name.should == 'keen'
       step.plugin.should == 'keen'
       step.block.should == empty_proc
@@ -32,7 +32,7 @@ describe Pushover::Step do
 
     it 'should not require a plugin' do
       empty_proc = Proc.new {}
-      step = Pushover::Step.new('foo', &empty_proc)
+      step = Pushpop::Step.new('foo', &empty_proc)
       step.name.should == 'foo'
       step.block.should == empty_proc
     end
@@ -45,7 +45,7 @@ describe Pushover::Step do
       arg1, arg2 = nil
       times_run = 0
       empty_proc = Proc.new { |a1, a2| arg1 = a1; arg2 = a2; times_run += 1 }
-      step = Pushover::Step.new('foo', &empty_proc)
+      step = Pushpop::Step.new('foo', &empty_proc)
       step.run('foo', 'bar')
       arg1.should == 'foo'
       arg2.should == 'bar'
@@ -56,12 +56,12 @@ describe Pushover::Step do
 
   describe 'template' do
     it 'should render the named template with the response binding' do
-      step = Pushover::Step.new
+      step = Pushpop::Step.new
       step.template('spec.html.erb', 500, {}, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>500</pre>'
     end
 
     it 'should render the named template with the step_response binding' do
-      step = Pushover::Step.new
+      step = Pushpop::Step.new
       step.template('spec.html.erb', nil, { :test => 600 }, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>600</pre>'
     end
   end

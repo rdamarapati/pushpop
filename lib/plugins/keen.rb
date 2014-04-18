@@ -1,6 +1,6 @@
 require 'keen'
 
-module Pushover
+module Pushpop
 
   class Keen < Step
 
@@ -74,5 +74,5 @@ module Pushover
 
   end
 
-  Pushover::Job.register_plugin(Keen::PLUGIN_NAME, Keen)
+  Pushpop::Job.register_plugin(Keen::PLUGIN_NAME, Keen)
 end

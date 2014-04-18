@@ -18,7 +18,7 @@ namespace :jobs do
   task :describe, :pushfile do |task, args|
     pushfile = args[:pushfile] || 'Pushfile'
     load "#{File.dirname(__FILE__)}/#{pushfile}"
-    Pushover.jobs.each do |job|
+    Pushpop.jobs.each do |job|
       puts job.name
     end
   end
@@ -26,13 +26,13 @@ namespace :jobs do
   task :test, :pushfile do |task, args|
     pushfile = args[:pushfile] || 'Pushfile'
     load "#{File.dirname(__FILE__)}/#{pushfile}"
-    Pushover.run
+    Pushpop.run
   end
 
   task :run, :pushfile do |task, args|
     pushfile = args[:pushfile] || 'Pushfile'
     load "#{File.dirname(__FILE__)}/#{pushfile}"
-    Pushover.schedule
+    Pushpop.schedule
     Clockwork.manager.run
   end
 end

@@ -1,21 +1,21 @@
 require 'spec_helper'
 
-describe Pushover::Job do
+describe Pushpop::Job do
 
-  let (:empty_job) { Pushover::Job.new('foo') do end }
-  let (:empty_step) { Pushover::Step.new('bar') do end }
+  let (:empty_job) { Pushpop::Job.new('foo') do end }
+  let (:empty_step) { Pushpop::Step.new('bar') do end }
 
   describe '#register_plugins' do
     it 'should register a plugin' do
-      Pushover::Job.register_plugin('blaz', Class)
-      Pushover::Job.step_plugins['blaz'].should == Class
+      Pushpop::Job.register_plugin('blaz', Class)
+      Pushpop::Job.step_plugins['blaz'].should == Class
     end
   end
 
   describe '#initialize' do
     it 'should set a name and evaluate a block' do
       block_ran = false
-      job = Pushover::Job.new('foo') do block_ran = true end
+      job = Pushpop::Job.new('foo') do block_ran = true end
       job.name.should == 'foo'
       job.every_duration.should be_nil
       job.every_options.should == {}
@@ -23,7 +23,7 @@ describe Pushover::Job do
     end
 
     it 'should auto-generate a name' do
-      job = Pushover::Job.new do end
+      job = Pushpop::Job.new do end
       job.name.should_not be_nil
     end
   end
@@ -47,11 +47,11 @@ describe Pushover::Job do
     end
 
     context 'plugin specified' do
-      class FakeStep < Pushover::Step
+      class FakeStep < Pushpop::Step
       end
 
       before do
-        Pushover::Job.register_plugin('blaz', FakeStep)
+        Pushpop::Job.register_plugin('blaz', FakeStep)
       end
 
       it 'should use the registered plugin to instantiate the class' do
@@ -76,7 +76,7 @@ describe Pushover::Job do
 
   describe '#run' do
     it 'should call each step with the response to the previous' do
-      job = Pushover::Job.new('foo') do
+      job = Pushpop::Job.new('foo') do
         step 'one' do
           10
         end
@@ -92,7 +92,7 @@ describe Pushover::Job do
   describe '#schedule' do
     it 'should add the job to clockwork' do
       frequency = 1.seconds
-      simple_job = Pushover::Job.new('foo') do
+      simple_job = Pushpop::Job.new('foo') do
         every frequency
         def times_run
           @times_run ||= 0
@@ -113,14 +113,14 @@ describe Pushover::Job do
   end
 
   describe '#method_missing' do
-    class FakeStep < Pushover::Step
+    class FakeStep < Pushpop::Step
     end
 
     before do
     end
 
     it 'should assume its a registered plugin name and try to create a step' do
-      Pushover::Job.register_plugin('blaz', FakeStep)
+      Pushpop::Job.register_plugin('blaz', FakeStep)
       simple_job = job do
         blaz 'hi' do end
       end
@@ -129,7 +129,7 @@ describe Pushover::Job do
     end
 
     it 'should not assume a name' do
-      Pushover::Job.register_plugin('blaz', FakeStep)
+      Pushpop::Job.register_plugin('blaz', FakeStep)
       simple_job = job do
         blaz do end
       end

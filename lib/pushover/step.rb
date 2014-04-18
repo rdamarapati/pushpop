@@ -1,6 +1,6 @@
 require 'erb'
 
-module Pushover
+module Pushpop
 
   class Step
 
@@ -25,7 +25,7 @@ module Pushover
     attr_accessor :block
 
     def initialize(name=nil, plugin=nil, &block)
-      self.name = name || plugin || Pushover.random_name
+      self.name = name || plugin || Pushpop.random_name
       self.plugin = plugin
       self.block = block
     end

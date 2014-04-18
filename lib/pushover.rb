@@ -1,14 +1,14 @@
 require 'logger'
 require 'clockwork'
-require 'pushover/job'
-require 'pushover/step'
+require 'pushpop/job'
+require 'pushpop/step'
 
 # require all plugins
 Dir["#{File.expand_path('../plugins/*', __FILE__)}.rb"].each { |file|
   require file
 }
 
-module Pushover
+module Pushpop
   class << self
     cattr_accessor :logger
     cattr_accessor :jobs
@@ -37,10 +37,10 @@ end
 
 # add into main
 def job(name=nil, &block)
-  Pushover.add_job(name, &block)
+  Pushpop.add_job(name, &block)
 end
 
-Pushover.logger = lambda {
+Pushpop.logger = lambda {
   logger = Logger.new($stdout)
   if ENV['DEBUG']
     logger.level = Logger::DEBUG

@@ -1,4 +1,4 @@
-module Pushover
+module Pushpop
 
   class Job
 
@@ -20,7 +20,7 @@ module Pushover
     attr_accessor :steps
 
     def initialize(name=nil, &block)
-      self.name = name || Pushover.random_name
+      self.name = name || Pushpop.random_name
       self.steps = []
       self.every_options = {}
       self.instance_eval(&block)
@@ -70,7 +70,7 @@ module Pushover
       end
 
       # log responses in debug
-      Pushover.logger.debug("#{name}: #{step_responses}")
+      Pushpop.logger.debug("#{name}: #{step_responses}")
 
       # return the last response and all responses
       [last_response, step_responses]

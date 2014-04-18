@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Pushover::Keen do
+describe Pushpop::Keen do
 
   describe '#configure' do
 
     it 'should set various params' do
 
-      step = Pushover::Keen.new do
+      step = Pushpop::Keen.new do
         event_collection 'pageviews'
         analysis_type 'count'
         timeframe 'last_3_days'
@@ -43,7 +43,7 @@ describe Pushover::Keen do
           :timeframe => 'last_3_days'
       }).and_return(365)
 
-      step = Pushover::Keen.new('one') do
+      step = Pushpop::Keen.new('one') do
         event_collection 'pageviews'
         analysis_type 'count'
         timeframe 'last_3_days'
@@ -55,7 +55,7 @@ describe Pushover::Keen do
 
   describe '#to_analysis_options' do
     it 'should include various options' do
-      step = Pushover::Keen.new('one') do end
+      step = Pushpop::Keen.new('one') do end
       step._timeframe = 'last_4_days'
       step._group_by = 'referer'
       step._target_property = 'trinkets'
@@ -81,7 +81,7 @@ describe Pushover::Keen do
     end
 
     it 'should not include nils' do
-      step = Pushover::Keen.new('one') do end
+      step = Pushpop::Keen.new('one') do end
       step.to_analysis_options.should == {}
     end
   end

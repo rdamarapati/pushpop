@@ -3,8 +3,8 @@
 # Sample Pushfile that just does math
 # See examples folder for more examples!
 
-# first step is to require pushover
-require 'pushover'
+# first step is to require pushpop
+require 'pushpop'
 
 # now create any number of jobs with any number of steps
 
@@ -17,7 +17,7 @@ job 'Simple Math' do
     20 + response
   end
   step do |response|
-    puts 'Hello new Pushover user, let\'s do a math!'
+    puts 'Hello new Pushpop user, let\'s do a math!'
     puts "10 + 20 = #{response}"
   end
 end
