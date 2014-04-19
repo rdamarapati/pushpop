@@ -18,7 +18,7 @@ job 'Pingpong check response report' do
     to 'josh+pushpop@keen.io'
     from 'josh+pushpop@keen.io'
     subject 'Pingpong Daily Response Time Report'
-    body 'keen_sendgrid.html.erb', response, step_responses, EXAMPLE_TEMPLATES_DIR
+    body 'response_time_report.html.erb', response, step_responses, EXAMPLE_TEMPLATES_DIR
     preview ENV['PREVIEW']
   end
 

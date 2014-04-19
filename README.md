@@ -63,14 +63,16 @@ $ gem install bundler
 $ bundle install
 ```
 
-default for rake tasks. Try a rake task now:
+Now you should be able to run a simple job. There's one defined in `jobs/example.rb`. Run all jobs in the `jobs` folder once using the
+`jobs:run_once` rake task.
 
 ``` shell
-$ bundle exec rake jobs:test
+$ bundle exec rake jobs:run_once
 ```
 
-The `jobs:test` rake task runs each job just once, so you can see what it'll do. Another rake task, `jobs:run`,
-will run the jobs at the intervals you've defined.
+Any output of the job(s) will be printed to the console and the program will then exit.
+
+Another rake task, `jobs:run`, will run the jobs indefinitely at the intervals you've defined.
 
 ``` shell
 $ bundle exec rake jobs:run
@@ -79,19 +81,20 @@ $ bundle exec rake jobs:run
 Pushpop uses [Clockwork](https://github.com/tomykaira/clockwork) to schedule jobs. Clockwork creates a lightweight, long-running Ruby process that does work at configurable intervals. It doesn't install anything into cron,
 and there's no confusing cron syntax required. It will run anywhere a Ruby app can, Heroku included.
 
-This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job at the times specified in the Pushfile.
+This rake task starts a Clockwork scheduler that will run indefinitely until it is killed. It runs each job at the times specified.
 
-You can also run rake tasks using a different Pushfile inside the project folder. Just add an argument to the rake task.
+You can also run a specific job file. Just add an argument to the rake task:
 
 ``` shell
-$ bundle exec rake jobs:run[examples/Pushfile-Keen]
+$ bundle exec rake jobs:run_once[jobs/other_job.rb]
+$ bundle exec rake jobs:run[jobs/other_job.rb]
 ```
 
-The default `Pushfile` isn't very interesting. You should change it to add the tasks you want to run. If you change it,
+The example job isn't very interesting. You should change it to add the tasks you want to run. If you change it,
 make sure to commit before you deploy.
 
 ``` shell
-$ git add Pushfile
+$ git add jobs
 $ git commit -m 'Added my jobs'
 ```
 
@@ -137,8 +140,8 @@ $ heroku logs --tail
 
 ### The Pushpop DSL + API
 
-Steps and jobs are the heart of the Pushpop DSL (domain-specific language). A `Pushfile` contains one or more jobs,
-and jobs contain one or more steps.
+Steps and jobs are the heart of the Pushpop DSL (domain-specific language). Any file can contain one or more jobs,
+and each job contain one or more steps.
 
 #### Jobs
 
@@ -289,7 +292,7 @@ Here are some ways to use Pushpop to do common tasks.
 By pairing Pingpong with Pushpop, you can get custom alerts and reports about the web performance and
 availability you're attempting to observe.
 
-Here's a `Pushfile` recipe that sends an SMS if any check had errors in the last minute.
+Here's a job that sends an SMS if any check had errors in the last minute.
 
 ``` ruby
 job do
@@ -320,9 +323,8 @@ end
 
 ##### Daily response time email report
 
-See [Keen-Sendgrid.Pushfile](examples/Keen-Sendgrid.Pushfile) and the
-[corresponding template](examples/templates/pingpong_report.html.erb).
-
+See [examples/keen_sendgrid_job.rb](examples/keen-sendgrid_job.rb and the
+[corresponding template](examples/templates/keen_sendgrid.html.erb).
 
 ### Plugin Documentation
 
