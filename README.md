@@ -1,5 +1,6 @@
 # Pushpop
 [![Build Status](https://travis-ci.org/keenlabs/pushpop.svg)](https://travis-ci.org/keenlabs/pushpop)
+[![Dependency Status](https://gemnasium.com/keenlabs/pushpop.svg)](https://gemnasium.com/keenlabs/pushpop)
 
 Send emails & notifications in response to analytics events.
 <hr>
