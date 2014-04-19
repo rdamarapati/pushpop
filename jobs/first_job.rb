@@ -1,9 +1,6 @@
-#!/usr/bin/env ruby
-
-# Sample Pushfile that just does math
+# Sample job that just does math
 # See examples folder for more examples!
 
-# first step is to require pushpop
 require 'pushpop'
 
 # now create any number of jobs with any number of steps
@@ -18,6 +15,6 @@ job 'Simple Math' do
   end
   step do |response|
     puts 'Hello new Pushpop user, let\'s do a math!'
-    puts "10 + 20 = #{response}"
+    puts template 'first_template.html.erb', response
   end
 end

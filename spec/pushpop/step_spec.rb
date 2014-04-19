@@ -52,6 +52,15 @@ describe Pushpop::Step do
       times_run.should == 1
     end
 
+    it 'should execute the block bound to the step' do
+      _self = nil
+      step = Pushpop::Step.new(nil, nil) do
+        _self = self
+      end
+      step.run
+      _self.should == step
+    end
+
   end
 
   describe 'template' do

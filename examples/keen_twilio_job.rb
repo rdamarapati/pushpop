@@ -1,8 +1,6 @@
-#!/usr/bin/env ruby
-
 require 'pushpop'
 
-job do
+job 'Text pageviews every 24 hours' do
 
   every 24.hours
 

@@ -4,7 +4,7 @@ module Pushpop
 
   class Step
 
-    TEMPLATES_DIRECTORY = File.expand_path('../../templates', __FILE__)
+    TEMPLATES_DIRECTORY = File.expand_path('../../../templates', __FILE__)
 
     class ERBContext
       attr_accessor :response
@@ -30,13 +30,13 @@ module Pushpop
       self.block = block
     end
 
-    def template(filename, response, step_responses, directory=TEMPLATES_DIRECTORY)
+    def template(filename, response, step_responses={}, directory=TEMPLATES_DIRECTORY)
       erb_context = ERBContext.new(response, step_responses)
       ERB.new(get_template_contents(filename, directory)).result(erb_context.get_binding)
     end
 
     def run(last_response=nil, step_responses=nil)
-      block.call(last_response, step_responses)
+      self.instance_exec(last_response, step_responses, &block)
     end
 
     private

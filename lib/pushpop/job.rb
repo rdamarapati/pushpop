@@ -4,12 +4,12 @@ module Pushpop
 
     class << self
 
-      cattr_accessor :step_plugins
-      self.step_plugins = {}
+      cattr_accessor :plugins
+      self.plugins = {}
 
       def register_plugin(name, klass)
-        self.step_plugins ||= {}
-        self.step_plugins[name.to_s] = klass
+        self.plugins ||= {}
+        self.plugins[name.to_s] = klass
       end
 
     end
@@ -34,7 +34,7 @@ module Pushpop
     def step(name=nil, plugin=nil, &block)
       if plugin
 
-        plugin_klass = self.class.step_plugins[plugin]
+        plugin_klass = self.class.plugins[plugin]
         raise "No plugin configured for #{plugin}" unless plugin_klass
 
         self.add_step(plugin_klass.new(name, plugin, &block))
@@ -70,14 +70,14 @@ module Pushpop
       end
 
       # log responses in debug
-      Pushpop.logger.debug("#{name}: #{step_responses}")
+      Pushpop.logger.info("#{name}: #{step_responses}")
 
       # return the last response and all responses
       [last_response, step_responses]
     end
 
     def method_missing(method, *args, &block)
-      plugin_class = self.class.step_plugins[method.to_s]
+      plugin_class = self.class.plugins[method.to_s]
 
       name = args[0]
       plugin = method.to_s
@@ -85,7 +85,7 @@ module Pushpop
       if plugin_class
         step(name, plugin, &block)
       else
-        raise "No plugin defined until name #{method}"
+        super
       end
     end
 

@@ -8,7 +8,7 @@ describe Pushpop::Job do
   describe '#register_plugins' do
     it 'should register a plugin' do
       Pushpop::Job.register_plugin('blaz', Class)
-      Pushpop::Job.step_plugins['blaz'].should == Class
+      Pushpop::Job.plugins['blaz'].should == Class
     end
   end
 
@@ -94,21 +94,18 @@ describe Pushpop::Job do
       frequency = 1.seconds
       simple_job = Pushpop::Job.new('foo') do
         every frequency
-        def times_run
-          @times_run ||= 0
-        end
         step 'track_times_run' do
+          @times_run ||= 0
           @times_run += 1
         end
       end
 
       simple_job.schedule
 
-      simple_job.times_run.should == 0
       Clockwork.manager.tick(Time.now)
-      simple_job.times_run.should == 1
+      simple_job.run.first.should == 2
       Clockwork.manager.tick(Time.now + frequency)
-      simple_job.times_run.should == 2
+      simple_job.run.first.should == 4
     end
   end
 
@@ -143,7 +140,7 @@ describe Pushpop::Job do
         job do
           blaze do end
         end
-      }.to raise_error /No plugin defined/
+      }.to raise_error /undefined method/
     end
   end
 

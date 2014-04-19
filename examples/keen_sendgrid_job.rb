@@ -1,12 +1,8 @@
-#!/usr/bin/env ruby
-
-EXAMPLE_TEMPLATES_DIRECTORY = File.expand_path('../templates', __FILE__)
-
-# This example creates a Pingpong-compatible check response time report
-
 require 'pushpop'
 
-job do
+EXAMPLE_TEMPLATES_DIR = File.expand_path('../templates', __FILE__)
+
+job 'Pingpong check response report' do
 
   every 24.hours
 
@@ -22,7 +18,7 @@ job do
     to 'josh+pushpop@keen.io'
     from 'josh+pushpop@keen.io'
     subject 'Pingpong Daily Response Time Report'
-    body 'pingpong_report.html.erb', response, step_responses, EXAMPLE_TEMPLATES_DIRECTORY
+    body 'keen_sendgrid.html.erb', response, step_responses, EXAMPLE_TEMPLATES_DIR
     preview ENV['PREVIEW']
   end
 

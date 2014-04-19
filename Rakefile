@@ -13,25 +13,35 @@ begin
 rescue LoadError
 end
 
+def require_jobfiles(args)
+  require 'pushpop'
+  if jobfile = args[:jobfile]
+    load "#{File.dirname(__FILE__)}/#{jobfile}"
+  else
+    Dir.glob("#{File.dirname(__FILE__)}/jobs/*").each { |file|
+      require file
+    }
+  end
+end
+
 namespace :jobs do
   desc 'Describe jobs'
-  task :describe, :pushfile do |task, args|
-    pushfile = args[:pushfile] || 'Pushfile'
-    load "#{File.dirname(__FILE__)}/#{pushfile}"
+  task :describe, :jobfile do |_, args|
+    require_jobfiles(args)
     Pushpop.jobs.each do |job|
       puts job.name
     end
   end
 
-  task :test, :pushfile do |task, args|
-    pushfile = args[:pushfile] || 'Pushfile'
-    load "#{File.dirname(__FILE__)}/#{pushfile}"
+  desc 'Run each job once'
+  task :run_once, :jobfile do |_, args|
+    require_jobfiles(args)
     Pushpop.run
   end
 
-  task :run, :pushfile do |task, args|
-    pushfile = args[:pushfile] || 'Pushfile'
-    load "#{File.dirname(__FILE__)}/#{pushfile}"
+  desc 'Run jobs ongoing'
+  task :run, :jobfile do |_, args|
+    require_jobfiles(args)
     Pushpop.schedule
     Clockwork.manager.run
   end
