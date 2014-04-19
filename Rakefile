@@ -9,7 +9,7 @@ begin
     t.pattern = 'spec/**/*_spec.rb'
   end
 
-  task :default => :spec
+  task default: :spec
 rescue LoadError
 end
 

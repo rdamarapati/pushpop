@@ -168,12 +168,12 @@ Here are some cool things you can do:
 
 ``` ruby
 every 5.seconds
-every 24.hours, :at => '12:00'
-every 24.hours, :at => ['00:00', '12:00']
-every 24.hours, :at => '**:05'
-every 24.hours, :at => '00:00', :tz => 'UTC'
-every 5.seconds, :at => '10:**'
-every 1.week, :at => 'Monday 12:30'
+every 24.hours, at: '12:00'
+every 24.hours, at: ['00:00', '12:00']
+every 24.hours, at: '**:05'
+every 24.hours, at: '00:00', tz: 'UTC'
+every 5.seconds, at: '10:**'
+every 1.week, at: 'Monday 12:30'
 ```
 
 See the full set of options on the [Clockwork README](https://github.com/tomykaira/clockwork#event-parameters).
@@ -345,7 +345,7 @@ job 'daily average response time by check for successful requests in april' do
     target_property   'request.duration'
     group_by          'check.name'
     interval          'daily'
-    timeframe         { :start => '2014-04-01T00:00Z' }
+    timeframe         ({ start: '2014-04-01T00:00Z' })
     filters           [{ property_name: "response.successful",
                          operator: "eq",
                          property_value: true }]

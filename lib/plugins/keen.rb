@@ -26,13 +26,13 @@ module Pushpop
     end
 
     def to_analysis_options
-      { :timeframe => self._timeframe,
-        :target_property => self._target_property,
-        :group_by => self._group_by,
-        :interval => self._interval,
-        :filters => self._filters,
-        :analyses => self._analyses,
-        :steps => self._steps
+      { timeframe: self._timeframe,
+        target_property: self._target_property,
+        group_by: self._group_by,
+        interval: self._interval,
+        filters: self._filters,
+        analyses: self._analyses,
+        steps: self._steps
       }.delete_if { |_, v| v.nil? }
     end
 

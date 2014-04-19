@@ -31,9 +31,9 @@ describe Pushpop::Job do
   describe '#every' do
     it 'should set duration and options' do
       job = empty_job
-      job.every(10.seconds, :at => '01:02')
+      job.every(10.seconds, at: '01:02')
       job.every_duration.should == 10
-      job.every_options.should == { :at => '01:02' }
+      job.every_options.should == { at: '01:02' }
     end
   end
 

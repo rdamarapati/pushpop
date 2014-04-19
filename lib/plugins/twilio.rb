@@ -25,9 +25,9 @@ module Pushpop
       client = ::Twilio::REST::Client.new(TWILIO_SID, TWILIO_AUTH_TOKEN)
 
       client.account.messages.create(
-          :from => _from,
-          :to => _to,
-          :body => _body )
+          from: _from,
+          to: _to,
+          body: _body )
     end
 
     def configure(last_response=nil, step_responses=nil)

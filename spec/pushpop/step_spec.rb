@@ -62,7 +62,7 @@ describe Pushpop::Step do
 
     it 'should render the named template with the step_response binding' do
       step = Pushpop::Step.new
-      step.template('spec.html.erb', nil, { :test => 600 }, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>600</pre>'
+      step.template('spec.html.erb', nil, { test: 600 }, SPEC_TEMPLATES_DIRECTORY).strip.should == '<pre>600</pre>'
     end
   end
 
