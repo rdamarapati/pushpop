@@ -14,7 +14,7 @@ job 'Simple Math' do
     20 + response
   end
   step do |response|
-    puts 'Hello new Pushpop user, let\'s do a math!'
+    puts 'Hey Pushpop, let\'s do a math!'
     puts template 'first_template.html.erb', response
   end
 end
