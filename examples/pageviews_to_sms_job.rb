@@ -4,15 +4,15 @@ job 'Text pageviews every 24 hours' do
 
   every 24.hours
 
-  keen do
+  keen 'load_pageviews' do
     event_collection  'pageviews'
     analysis_type     'count'
     timeframe         'last_24_hours'
   end
 
-  twilio do |_, step_responses|
+  twilio 'send notification' do |response|
     to    ENV['EXAMPLE_TWILIO_TO']
-    body  "There were #{step_responses['keen']} pageviews today!"
+    body  "There were #{response} pageviews today!"
   end
 
 end

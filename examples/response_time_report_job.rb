@@ -6,7 +6,7 @@ job 'Pingpong check response report' do
 
   every 24.hours
 
-  keen do
+  keen 'load_response_times' do
     event_collection  'checks'
     analysis_type     'average'
     target_property   'request.duration'
@@ -14,7 +14,7 @@ job 'Pingpong check response report' do
     group_by          'check.name'
   end
 
-  sendgrid do |response, step_responses|
+  sendgrid 'send_email' do |response, step_responses|
     to 'josh+pushpop@keen.io'
     from 'josh+pushpop@keen.io'
     subject 'Pingpong Daily Response Time Report'
