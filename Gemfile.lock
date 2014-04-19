@@ -9,7 +9,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.6)
     builder (3.2.2)
-    clockwork (0.7.3)
+    clockwork (0.7.4)
       activesupport
       tzinfo
     crack (0.4.2)
@@ -26,10 +26,10 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
-    minitest (5.3.2)
+    minitest (5.3.3)
     multi_json (1.9.2)
     polyglot (0.3.4)
-    rake (10.2.2)
+    rake (10.3.1)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
