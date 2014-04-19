@@ -22,9 +22,9 @@ Pairing Pushpop with Pingpong makes it easy to get custom alerts when Pingpong c
 
 ### Usage
 
-The core building blocks of Pushpop are jobs and steps. Jobs consist of multiple steps. Jobs and steps are defined in a `Pushfile`.
+The core building blocks of Pushpop are jobs and steps. Jobs consist of multiple steps. Jobs are defined in a Ruby file.
 
-Here's a `Pushfile` that runs a Keen IO analysis every day at midnight, then sends an SMS containing the results:
+Here's a job file that runs a Keen IO analysis every day at midnight, then sends an SMS containing the results:
 
 ``` ruby
 require 'pushpop'
@@ -63,7 +63,6 @@ $ gem install bundler
 $ bundle install
 ```
 
-The repository comes with a very simple `Pushfile` located in the project's root. This `Pushfile` is the
 default for rake tasks. Try a rake task now:
 
 ``` shell
