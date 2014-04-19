@@ -14,4 +14,11 @@ describe Pushpop do
       Pushpop.jobs.first.name.should == 'foo'
     end
   end
+
+  describe 'random_name' do
+    it 'should be 8 characters and alphanumeric' do
+      Pushpop.random_name.should =~ /^\w{8}$/
+    end
+  end
+
 end
