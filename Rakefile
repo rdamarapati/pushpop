@@ -18,7 +18,7 @@ def require_jobfiles(args)
   if jobfile = args[:jobfile]
     load "#{File.dirname(__FILE__)}/#{jobfile}"
   else
-    Dir.glob("#{File.dirname(__FILE__)}/jobs/*").each { |file|
+    Dir.glob("#{File.dirname(__FILE__)}/jobs/**/*.rb").each { |file|
       require file
     }
   end
